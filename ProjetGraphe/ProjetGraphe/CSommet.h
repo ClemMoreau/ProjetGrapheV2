@@ -1,6 +1,5 @@
 #ifndef  SOM
 #define SOM 0
-
 #include "CArc.h"
 
 class CSommet {
