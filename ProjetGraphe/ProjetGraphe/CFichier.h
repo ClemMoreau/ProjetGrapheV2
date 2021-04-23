@@ -13,18 +13,18 @@ class CFichier
 {
 private:
 
-	/*************
-	* ATTRIBUTS *
-	*************/
+				/*************
+				 * ATTRIBUTS *
+				 *************/
 
 	/*Nom du Fichier*/
-	char *pcFICNomFichier;
+	char* psFICNomFichier;
 
 public:
 
-	/*****************
-	 * CONSTRUCTEURS *
-	*****************/
+				/*****************
+				 * CONSTRUCTEURS *
+				 *****************/
 
 	/*********************************************************
 	Constructeur par défaut de la classe CFichier
@@ -37,41 +37,42 @@ public:
 	*********************************************************/
 	CFichier(CFichier &FICFichier);
 
-	/***************
-	* DESTRUCTEUR *
-	***************/
+				/***************
+				 * DESTRUCTEUR *
+				 ***************/
+
 	/*********************************************************
 	Destructeur de la classe CFichier
 	*********************************************************/
 	~CFichier();
 
-	/***********
-	 * GETTERS *
-	 ***********/
+				/***********
+				 * GETTERS *
+				 ***********/
+
 	 /*********************************************************
 	 Renvoie le nom du fichier
 	 *********************************************************/
 	char* FICLireNomFichier();
 
 
-	/***********
-	* SETTERS *
-	***********/
+				/***********
+				 * SETTERS *
+				 ***********/
 
 	/*********************************************************
 	Modifie le nom du fichier
 	*********************************************************/
 	void FICModifierNomFichier(const char * pcNouveauNom);
 
-	/************
-	* METHODES *
-	************/
+				/************
+				 * METHODES *
+				 ************/
 
 	/*********************************************************
 	Lecture du fichier et extraction des informations dans le fichier
 	*********************************************************/
-
-	//CGraphe FICLireFichier();
+	CGraphe FICLireFichier();
 };
 
 #endif //FIC

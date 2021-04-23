@@ -4,15 +4,15 @@
 class CArc
 {
 private:
-	/*************
-	* ATTRIBUTS *
-	*************/
+			/*************
+			 * ATTRIBUTS *
+			 *************/
 	unsigned int uiARDestination;
 
 public:
-	/*****************
-	 * CONSTRUCTEURS *
-	*****************/
+			/*****************
+			 * CONSTRUCTEURS *
+			 *****************/
 
 	/*********************************************************
 	Constructeur par défaut de la classe CArc
@@ -25,32 +25,32 @@ public:
 	*********************************************************/
 	CArc(CArc &Carc);
 
-	/***************
-	* DESTRUCTEUR *
-	***************/
+			/***************
+			 * DESTRUCTEUR *
+			 ***************/
 
 	/*********************************************************
 	Destructeur de la classe CArc
 	*********************************************************/
 	~CArc();
 
-	/***********
-	 * GETTERS *
-	 ***********/
+			/***********
+			 * GETTERS *
+			 ***********/
 
 	 /*********************************************************
 	 Renvoie le numéro du sommet de destination
 	 *********************************************************/
 	unsigned int ARCLireDestination();
 
-	/***********
-	 * SETTERS *
-	 ***********/
+			/***********
+			 * SETTERS *
+			 ***********/
 
 	 /*********************************************************
 	 Modifie le sommet de destination
 	 *********************************************************/
-	void ARcModifierDestination(int iDestination);
+	void ARCModifierDestination(int iDestination);
 };
 
 #endif // !ARC
