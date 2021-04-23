@@ -7,6 +7,14 @@ class CGraphe {
 private:
 	
 	CSommet* pGRAListeSommet;
+
+public :
+
+	CGraphe();
+
+	CGraphe(CGraphe& GRAGraphe);
+
+	~CGraphe();
 };
 
 #endif //GRA
