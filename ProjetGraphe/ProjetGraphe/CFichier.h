@@ -9,6 +9,8 @@
 #include "CException.h"
 #include "CGraphe.h"
 
+#define nom_null 501
+
 class CFichier
 {
 private:

@@ -1,5 +1,9 @@
 #ifndef ARC
-#define ARC 0;
+#define ARC 0
+
+#include "CException.h"
+
+#define destination_negatif 201
 
 class CArc
 {
@@ -23,7 +27,13 @@ public:
 	Constructeur de recopie de la classe CArc
 	prenant en paramètre un CArc
 	*********************************************************/
-	CArc(CArc &Carc);
+	CArc(CArc &ARCArc);
+
+	/*********************************************************
+	Constructeur de la classe CArc
+	prenant en paramètre la destination de l'arc créé
+	*********************************************************/
+	CArc(int iDestination);
 
 			/***************
 			 * DESTRUCTEUR *
@@ -53,4 +63,4 @@ public:
 	void ARCModifierDestination(int iDestination);
 };
 
-#endif // !ARC
+#endif //ARC

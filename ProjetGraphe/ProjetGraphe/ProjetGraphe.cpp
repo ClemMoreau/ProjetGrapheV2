@@ -5,5 +5,8 @@ using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	CSommet SOMSommet;
+
+	SOMSommet.SOMModifierNumeroSommet(12);
+	cout << SOMSommet.SOMLireNombreArcArrivant() << endl;
 }

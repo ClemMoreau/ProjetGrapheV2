@@ -17,12 +17,14 @@ CGraphe::~CGraphe()
 
 CSommet* CGraphe::GRALireListeSommet()
 {
-
+	CSommet* SOMSommet = new CSommet;
+	return SOMSommet;
 }
 
 CSommet CGraphe::GRALireSommet(int iIndice)
 {
-
+	CSommet SOMSommet;
+	return SOMSommet;
 }
 
 void CGraphe::GRAAjouterSommet(CSommet SOMSommet)
@@ -57,7 +59,8 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 
 CGraphe CGraphe::GRAInverseGraphe()
 {
-
+	CGraphe GRAGraphe;
+	return GRAGraphe;
 }
 
 void CGraphe::GRAAfficherGraphe()

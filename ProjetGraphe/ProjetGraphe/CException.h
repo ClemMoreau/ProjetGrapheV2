@@ -1,5 +1,7 @@
 #ifndef EXC
 #define EXC 0
+
+#include <iostream>
 #define valeur_negative 100
 
 class CException
@@ -11,6 +13,8 @@ private:
 
 	unsigned int uiEXCvaleur;
 
+	char* pcEXCMessage;
+		
 public:
 	/*****************
 	 * CONSTRUCTEURS *
@@ -59,11 +63,21 @@ public:
 	Attributs le code d'exception correspondant
 	*********************************************************
 	Entrée: unsigned int uiValeur : le code de l'exception à levé
-	Nécessite:	uiValeur > 0
+	Nécessite: (rien)
 	Sortie: (rien)
 	Entraîne :	this.uiEXCValeur = uiValeur
 	*********************************************************/
 	void EXCmodifier_valeur(int iValeur);
+
+	/*********************************************************
+	Attributs le message d'exception correspondant
+	*********************************************************
+	Entrée: char* pcMessage : le message de l'exception à levé
+	Nécessite: (rien)
+	Sortie: (rien)
+	Entraîne :	this.pcEXCMessage = pcMessage
+	*********************************************************/
+	void EXCmodifier_message(const char* pcMessage);
 
 	/***********
 	 * GETTERS *
@@ -78,6 +92,16 @@ public:
 	 Entraîne :	(rien)
 	 *********************************************************/
 	unsigned int EXClire_valeur();
+
+	/*********************************************************
+	 Lit le message de l'exception
+	 *********************************************************
+	 Entrée: (rien)
+	 Nécessite:	(rien)
+	 Sortie: unsigned int : le code de l'exception à levé
+	 Entraîne :	(rien)
+	 *********************************************************/
+	char* EXClire_message();
 };
 #endif //EXC
 

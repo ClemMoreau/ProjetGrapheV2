@@ -49,8 +49,8 @@ CException::~CException()
 /*********************************************************
 Destructeur de la classe CException
 *********************************************************
-Entrée: unsigned int uiValeur : le code de l'exception à levé
-Nécessite:	uiValeur > 0
+Entrée: unsigned int uiValeur : le code de l'exception
+Nécessite: (rien)
 Sortie: (rien)
 Entraîne :	this.uiEXCValeur = uiValeur
 *********************************************************/
@@ -66,14 +66,59 @@ void CException::EXCmodifier_valeur(int iValeur)
 }
 
 /*********************************************************
+Attribut le message d'exception correspondant
+*********************************************************
+Entrée: char* pcMessage : le message de l'exception à levé
+Nécessite: (rien)
+Sortie: (rien)
+Entraîne :	this.pcEXCMessage = pcMessage
+*********************************************************/
+void CException::EXCmodifier_message(const char* pcMessage)
+{
+	if (pcMessage)
+	{
+		if (!EXClire_message())
+		{
+			free(pcEXCMessage);
+		}
+
+		int iConteur = strlen(pcMessage);
+		pcEXCMessage = (char*)malloc(iConteur + 1);
+		int iBoucleCopie;
+		for (iBoucleCopie = 0; iBoucleCopie < iConteur; iBoucleCopie++)
+		{
+			pcEXCMessage[iBoucleCopie] = pcMessage[iBoucleCopie];
+		}
+		pcEXCMessage[iBoucleCopie] = '\0';
+	}
+	else
+	{
+		pcEXCMessage = NULL;
+	}
+}
+
+/*********************************************************
 Destructeur de la classe CException
 *********************************************************
 Entrée: (rien)
 Nécessite:	(rien)
-Sortie: int : le code de l'exception à levé
+Sortie: unsigned int : le code de l'exception
 Entraîne :	(rien)
 *********************************************************/
 unsigned int CException::EXClire_valeur()
 {
 	return uiEXCvaleur;
+}
+
+/*********************************************************
+Lit le message de l'exception
+*********************************************************
+Entrée: (rien)
+Nécessite:	(rien)
+Sortie: unsigned int : le code de l'exception à levé
+Entraîne :	(rien)
+*********************************************************/
+char* CException::EXClire_message()
+{
+	return pcEXCMessage;
 }

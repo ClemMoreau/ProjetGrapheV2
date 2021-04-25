@@ -2,6 +2,8 @@
 #define SOM 0
 #include "CArc.h"
 
+#define numero_negatif 301
+
 class CSommet {
 
 private:
@@ -60,10 +62,20 @@ public:
 	CArc* SOMLireArcArrivant(int iIndice);
 
 	/*********************************************************
+	Retourne le nombre d'arc arrivant du sommet
+	*********************************************************/
+	int SOMLireNombreArcArrivant();
+
+	/*********************************************************
 	Retourne l'arc sortant à l'indice iIndice
 	du tableau des arcs sortant
 	*********************************************************/
 	CArc* SOMLireArcSortant(int iIndice);
+
+	/*********************************************************
+	Retourne le nombre d'arc sortant du sommet
+	*********************************************************/
+	int SOMLireNombreArcSortant();
 
 			/***********
 			 * SETTERS *
@@ -107,6 +119,7 @@ public:
 			/************
 			 * METHODES *
 			 ************/
+
 
 	/*********************************************************
 	Inverse l'orientation de tous les arcs reliés au sommet

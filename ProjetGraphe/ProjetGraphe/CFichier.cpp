@@ -105,5 +105,6 @@ rempli avec le contenu du fichier
 *********************************************************/
 CGraphe CFichier::FICLireFichier()
 {
-	
+	CGraphe GRAGraphe;
+	return GRAGraphe;
 }
