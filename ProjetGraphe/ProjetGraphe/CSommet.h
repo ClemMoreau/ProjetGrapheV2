@@ -3,6 +3,7 @@
 #include "CArc.h"
 
 #define numero_negatif 301
+#define dimension_incorrecte 302
 
 class CSommet {
 
@@ -14,8 +15,14 @@ private:
 	/*Numero du sommet*/
 	unsigned int uiSOMNumero;
 
+	/*Nombre d'arrivant au sommet*/
+	unsigned int uiSOMNbArcArrivant;
+
 	/*Liste des arcs arrivant au sommet*/
 	CArc** ppARCSOMArcArrivant;
+
+	/*Nombre sortant du sommet*/
+	unsigned int uiSOMNbArcSortant;
 
 	/*Liste des arcs sortant au sommet*/
 	CArc** ppARCSOMArcSortant;

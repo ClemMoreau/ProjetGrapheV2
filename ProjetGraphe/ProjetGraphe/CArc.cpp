@@ -2,12 +2,12 @@
 
 CArc::CArc()
 {
-	ARCModifierDestination(0);
+	uiARDestination = 0;
 }
 
 CArc::CArc(CArc &ARCarc)
 {
-	ARCModifierDestination(ARCarc.ARCLireDestination());
+	uiARDestination = ARCarc.ARCLireDestination();
 }
 
 CArc::CArc(int iDestination)
@@ -16,15 +16,15 @@ CArc::CArc(int iDestination)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(destination_negatif);
-		EXCLevee.EXCmodifier_message("Numero sommet negatif !");
+		EXCLevee.EXCmodifier_message("Destination negative !");
 		throw(EXCLevee);
 	}
-	ARCModifierDestination(iDestination);
+	uiARDestination = iDestination;
 }
 
 CArc::~CArc()
 {
-	ARCModifierDestination(0);
+
 }
 
 unsigned int CArc::ARCLireDestination()
