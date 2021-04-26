@@ -3,13 +3,27 @@
 CSommet::CSommet()
 {
 	uiSOMNbArcArrivant = uiSOMNbArcSortant = 0;
-	ppARCSOMArcArrivant = (CArc**)malloc(uiSOMNbArcArrivant * sizeof(CArc*));
-	ppARCSOMArcSortant = (CArc**)malloc(uiSOMNbArcSortant * sizeof(CArc*));
+	ppARCSOMArcArrivant = NULL;
+	ppARCSOMArcSortant = NULL;
 }
 
 CSommet::CSommet(CSommet& SOMSommet)
 {
+	uiSOMNumero = SOMSommet.SOMLireNumeroSommet();
 
+	uiSOMNbArcArrivant = SOMSommet.SOMLireNombreArcArrivant();
+	ppARCSOMArcArrivant = (CArc**) realloc(ppARCSOMArcArrivant, sizeof(CArc*) * uiSOMNbArcArrivant);
+	for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcArrivant; iBoucle++)
+	{
+		*(ppARCSOMArcArrivant + iBoucle) = new CArc(*SOMSommet.SOMLireArcArrivant(iBoucle + 1));
+	}
+
+	uiSOMNbArcSortant = SOMSommet.SOMLireNombreArcSortant();
+	ppARCSOMArcSortant = (CArc**) realloc(ppARCSOMArcSortant, sizeof(CArc*) * uiSOMNbArcSortant);
+	for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcSortant; iBoucle++)
+	{
+		*(ppARCSOMArcSortant + iBoucle) = new CArc(*SOMSommet.SOMLireArcSortant(iBoucle + 1));
+	}
 }
 
 CSommet::~CSommet()
@@ -57,20 +71,33 @@ void CSommet::SOMModifierNumeroSommet(int iNumero)
 
 void CSommet::SOMAjouterArcArrivant(CArc* pARCArc) 
 {
+	if (!pARCArc)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(argument_null);
+		EXCLevee.EXCmodifier_message("Le paramètre à rajouter dans la liste est null !");
+		throw(EXCLevee);
+	}
 	/*un arc arrivant à forcément dans sa destination le sommet courant?*/
-	//if (pARCArc->ARCLireDestination() != uiSOMNumero)
-	ppARCSOMArcArrivant = (CArc**) realloc(ppARCSOMArcArrivant, uiSOMNbArcArrivant + 1);
+	/*if (pARCArc->ARCLireDestination() != uiSOMNumero)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(destination_incohérente);
+		EXCLevee.EXCmodifier_message("Un arc arrivant doit avoir pour destination le sommet courant !");
+		throw(EXCLevee);
+	}*/
+	ppARCSOMArcArrivant = (CArc**) realloc(ppARCSOMArcArrivant, sizeof(CArc*) * (uiSOMNbArcArrivant + 1));
 	*(ppARCSOMArcArrivant + uiSOMNbArcArrivant) = pARCArc;
 	uiSOMNbArcArrivant++;
 }
 
 void CSommet::SOMModifierArcArrivant(int iIndice, int iDestination)
 {
-	if (0 > iIndice || iIndice > uiSOMNbArcArrivant)
+	if (iIndice < 0 || iIndice > int(uiSOMNbArcArrivant))
 	{
 		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(dimension_incorrecte);
-		EXCLevee.EXCmodifier_message("Dimension hors du tableau !");
+		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
+		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
 
@@ -87,24 +114,67 @@ void CSommet::SOMModifierArcArrivant(int iIndice, int iDestination)
 
 void CSommet::SOMSupprimerArcArrivant(int iIndice)
 {
-	
+	if (iIndice < 0 || iIndice > int(uiSOMNbArcArrivant))
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
+		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
+		throw(EXCLevee);
+	}
+
+	//on décale le tableau
+	for (unsigned int iBoucle = iIndice; iBoucle < uiSOMNbArcArrivant - 1; iBoucle++)
+	{
+		*(ppARCSOMArcArrivant + iBoucle) = *(ppARCSOMArcArrivant + iBoucle + 1);
+	}
+	//on réallou
+	ppARCSOMArcArrivant = (CArc**)realloc(ppARCSOMArcArrivant, sizeof(CArc*) * (uiSOMNbArcArrivant - 1));
 }
 
 void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 {
-	ppARCSOMArcSortant = (CArc**)realloc(ppARCSOMArcSortant, uiSOMNbArcSortant + 1);
+	if (!pARCArc)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(argument_null);
+		EXCLevee.EXCmodifier_message("Le paramètre à rajouter dans la liste est null !");
+		throw(EXCLevee);
+	}
+	ppARCSOMArcSortant = (CArc**)realloc(ppARCSOMArcSortant, sizeof(CArc*) * (uiSOMNbArcSortant + 1));
 	*(ppARCSOMArcSortant + uiSOMNbArcSortant) = pARCArc;
 	uiSOMNbArcSortant++;
 }
 
 void CSommet::SOMModifierArcSortant(int iIndice, int iDestination)
 {
+	if (0 > iIndice || iIndice > int(uiSOMNbArcSortant))
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
+		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
+		throw(EXCLevee);
+	}
 
+	if (0 > iDestination)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(destination_negatif);
+		EXCLevee.EXCmodifier_message("Destination negative !");
+		throw(EXCLevee);
+	}
+
+	SOMLireArcSortant(iIndice)->ARCModifierDestination(iDestination);
 }
 
 void CSommet::SOMSupprimerArcSortant(int iIndice)
 {
-
+	//on décale le tableau
+	for (unsigned int iBoucle = iIndice; iBoucle < uiSOMNbArcSortant - 1; iBoucle++)
+	{
+		*(ppARCSOMArcSortant + iBoucle) = *(ppARCSOMArcSortant + iBoucle + 1);
+	}
+	//on réallou
+	ppARCSOMArcSortant = (CArc**)realloc(ppARCSOMArcSortant, sizeof(CArc*) * (uiSOMNbArcSortant - 1));
 }
 
 int CSommet::SOMLireNombreArcArrivant()

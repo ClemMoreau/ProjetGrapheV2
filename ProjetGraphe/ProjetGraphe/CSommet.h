@@ -3,7 +3,9 @@
 #include "CArc.h"
 
 #define numero_negatif 301
-#define dimension_incorrecte 302
+#define indice_incorrecte 302
+#define destination_incohérente 303
+#define argument_null 304
 
 class CSommet {
 
