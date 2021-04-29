@@ -6,6 +6,7 @@
 #define indice_incorrecte 302
 #define destination_incohérente 303
 #define argument_null 304
+#define echec_malloc 305
 
 class CSommet {
 
@@ -46,6 +47,12 @@ public:
 	*********************************************************/
 	CSommet(CSommet& SOMSommet);
 
+	/*********************************************************
+	Constructeur de recopie de la classe CSommet
+	prenant en paramètre un CSommet
+	*********************************************************/
+	CSommet(int iNumeroSommet);
+
 			/***************
 			 * DESTRUCTEUR *
 			 ***************/
@@ -65,26 +72,26 @@ public:
 	unsigned int SOMLireNumeroSommet();
 
 	/*********************************************************
+	Retourne le nombre d'arc arrivant du sommet
+	*********************************************************/
+	int SOMLireNombreArcArrivant();
+
+	/*********************************************************
 	Retourne l'arc arrivant à l'indice iIndice 
 	du tableau des arcs arrivant
 	*********************************************************/
 	CArc* SOMLireArcArrivant(int iIndice);
 
 	/*********************************************************
-	Retourne le nombre d'arc arrivant du sommet
+	Retourne le nombre d'arc sortant du sommet
 	*********************************************************/
-	int SOMLireNombreArcArrivant();
+	int SOMLireNombreArcSortant();
 
 	/*********************************************************
 	Retourne l'arc sortant à l'indice iIndice
 	du tableau des arcs sortant
 	*********************************************************/
 	CArc* SOMLireArcSortant(int iIndice);
-
-	/*********************************************************
-	Retourne le nombre d'arc sortant du sommet
-	*********************************************************/
-	int SOMLireNombreArcSortant();
 
 			/***********
 			 * SETTERS *

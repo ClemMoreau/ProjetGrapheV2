@@ -81,8 +81,6 @@ int main()
 	cout << "Num : " << SOMSommet.SOMLireNumeroSommet() << endl;
 	cout << "Nb sortant : " << SOMSommet.SOMLireNombreArcSortant() << endl;
 	cout << "Nb arrivant " << SOMSommet.SOMLireNombreArcArrivant() << endl << endl;
-	cout << "Liste sortant " << " : " << SOMSommet.SOMLireArcSortant(3)->ARCLireDestination() << endl;
-	cout << "Liste sortant " << " : " << SOMSommet.SOMLireArcSortant(4)->ARCLireDestination() << endl;
 	//test ajout
 	for (int i = 1; i <= SOMSommet.SOMLireNombreArcSortant(); i++)
 	{
