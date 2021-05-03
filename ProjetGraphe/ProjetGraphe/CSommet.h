@@ -136,11 +136,19 @@ public:
 			 * METHODES *
 			 ************/
 
-
 	/*********************************************************
 	Inverse l'orientation de tous les arcs reliés au sommet
 	*********************************************************/
 	void SOMInverserArrivantPartant();
+
+			/**************
+			 * SURCHARGES *
+			 **************/
+
+	/*********************************************************
+	Surcharge de l'opérateur d'affectation pour la classe CSommet
+	*********************************************************/
+	CSommet& operator=(CSommet& SOMSommet);
 };
 
 #endif // SOM

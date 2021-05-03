@@ -9,6 +9,9 @@ private:
 			/*************
 			 * ATTRIBUTS *
 			 *************/
+	/*Nombre de sommet dans le graphe*/
+	unsigned int uiGRANbSommet;
+
 	/*Liste des sommets du graphe*/
 	CSommet* pGRAListeSommet;
 
@@ -29,6 +32,12 @@ public :
 	*********************************************************/
 	CGraphe(CGraphe& GRAGraphe);
 
+	/*********************************************************
+	Constructeur de la classe CGraphe
+	prenant en paramètre un entier
+	*********************************************************/
+	CGraphe(int iNombreSommet);
+
 			/***************
 			 * DESTRUCTEUR *
 			 ***************/
@@ -41,6 +50,11 @@ public :
 			/***********
 			 * GETTERS *
 			 ***********/
+
+	/*********************************************************
+	Retourne la liste des sommets du graphe
+	*********************************************************/
+	unsigned int GRALireNombreSommet();
 
 	/*********************************************************
 	 Retourne la liste des sommets du graphe
@@ -60,7 +74,7 @@ public :
 	/*********************************************************
 	 Ajoute un sommet au graphe
 	 *********************************************************/
-	void GRAAjouterSommet(CSommet SOMSommet);
+	void GRAAjouterSommet(CSommet& SOMSommet);
 
 	/*********************************************************
 	 Modifie le sommet d'indice iIndice 
