@@ -358,6 +358,14 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMSupprimerArcArrivant(int iIndice)
 {
+	if (uiSOMNbArcArrivant == 0)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(liste_vide);
+		EXCLevee.EXCmodifier_message("Liste arc entrant vide !");
+		throw(EXCLevee);
+	}
+
 	// Test indice dans tableau
 	if (iIndice < 0 || iIndice > int(uiSOMNbArcArrivant))
 	{
@@ -473,6 +481,14 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMSupprimerArcSortant(int iIndice)
 {
+	if (uiSOMNbArcSortant == 0)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(liste_vide);
+		EXCLevee.EXCmodifier_message("Liste arc sortant vide !");
+		throw(EXCLevee);
+	}
+
 	// Test indice dans la liste
 	if (0 > iIndice || iIndice > int(uiSOMNbArcSortant))
 	{

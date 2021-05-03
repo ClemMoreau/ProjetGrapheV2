@@ -7,6 +7,7 @@
 #define destination_incohérente 303
 #define argument_null 304
 #define echec_malloc 305
+#define liste_vide 306
 
 class CSommet {
 
