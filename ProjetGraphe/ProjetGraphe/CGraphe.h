@@ -3,6 +3,7 @@
 #include "CSommet.h"
 
 #define sommet_introuvable 401
+#define arc_introuvable 402
 
 class CGraphe {
 
@@ -94,7 +95,7 @@ public :
 	 Ajoute un arc au graphe 
 	 entre les sommets iNumeroSommetDepart et iNumeroSommetDestination
 	 *********************************************************/
-	void GRAAjouterArcArrivant(int iNumeroSommetDepart, int iNumeroSommetDestination);
+	void GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestination);
 
 	/*********************************************************
 	 Modifie l'arc allant de iAncienSommetDepart à iAncienSommetDestination

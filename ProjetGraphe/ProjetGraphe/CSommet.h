@@ -75,7 +75,7 @@ public:
 	/*********************************************************
 	Retourne le nombre d'arc arrivant du sommet
 	*********************************************************/
-	int SOMLireNombreArcArrivant();
+	unsigned int SOMLireNombreArcArrivant();
 
 	/*********************************************************
 	Retourne l'arc arrivant à l'indice iIndice 
@@ -86,7 +86,7 @@ public:
 	/*********************************************************
 	Retourne le nombre d'arc sortant du sommet
 	*********************************************************/
-	int SOMLireNombreArcSortant();
+	unsigned int SOMLireNombreArcSortant();
 
 	/*********************************************************
 	Retourne l'arc sortant à l'indice iIndice

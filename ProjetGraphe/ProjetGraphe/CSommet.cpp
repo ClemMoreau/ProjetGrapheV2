@@ -180,7 +180,7 @@ Nécessite: (rien)
 Sortie: int uiSOMNbArcArrivant : le nombre d'arc arrivant au sommet
 Entraîne : (rien)
 *********************************************************/
-int CSommet::SOMLireNombreArcArrivant()
+unsigned int CSommet::SOMLireNombreArcArrivant()
 {
 	return uiSOMNbArcArrivant;
 }
@@ -198,7 +198,7 @@ Entraîne : (CArcs* en sortie) ou (Exception indice_incorrecte levée)
 CArc* CSommet::SOMLireArcArrivant(int iIndice)
 {
 	// Test indice compris dans les bornes du tableau
-	if (iIndice < 0 || iIndice > SOMLireNombreArcArrivant())
+	if (iIndice < 0 || iIndice > int(SOMLireNombreArcArrivant()))
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
@@ -216,7 +216,7 @@ Nécessite: (rien)
 Sortie: int uiSOMNbArcSortant : le nombre d'arc sortant au sommet
 Entraîne : (rien)
 *********************************************************/
-int CSommet::SOMLireNombreArcSortant()
+unsigned int CSommet::SOMLireNombreArcSortant()
 {
 	return uiSOMNbArcSortant;
 }
@@ -233,7 +233,7 @@ Entraîne : (CArcs* en sortie) ou (Exception indice_incorrecte levée)
 CArc* CSommet::SOMLireArcSortant(int iIndice)
 {
 	// Test indice compris dans les bornes du tableau
-	if (iIndice < 0 || iIndice > SOMLireNombreArcSortant())
+	if (iIndice < 0 || iIndice > int(SOMLireNombreArcSortant()))
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(indice_incorrecte);

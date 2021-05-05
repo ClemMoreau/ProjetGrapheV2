@@ -162,39 +162,112 @@ void CGraphe::GRASupprimerSommet(int iIndice)
 	
 }
 
-void CGraphe::GRAAjouterArcArrivant(int iNumeroSommetDepart, int iNumeroSommetDestination)
+//revoir les cas particuliers
+void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestination)
 {
-	bool bTestPresenceSommet = false;
-	unsigned int iBoucle;
+	bool bTestPresenceSommetDepart = false;
+	bool bTestPresenceSommetDestination = false;
+	unsigned int iBoucle, iIndiceSommetDepart, uiIndiceSommetDestination;
 
-	for (iBoucle = 0; iBoucle < uiGRANbSommet || bTestPresenceSommet == false; iBoucle++)
+	for (iBoucle = 0; iBoucle < uiGRANbSommet || bTestPresenceSommetDepart == false; iBoucle++)
 	{
 		if (pGRAListeSommet[iBoucle].SOMLireNumeroSommet() == iNumeroSommetDepart)
 		{
-			bTestPresenceSommet = true;
+			bTestPresenceSommetDepart = true;
+			iIndiceSommetDepart = iBoucle;
+		}
+
+		if (pGRAListeSommet[iBoucle].SOMLireNumeroSommet() == iNumeroSommetDestination)
+		{
+			bTestPresenceSommetDestination = true;
+			uiIndiceSommetDestination = iBoucle;
 		}
 	}
 
-	if (bTestPresenceSommet == false)
+	if (bTestPresenceSommetDepart == false)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
-		EXCLevee.EXCmodifier_message("Le sommet n'a pas été trouvé dans la liste !");
+		EXCLevee.EXCmodifier_message("Le sommet de départ n'a pas été trouvé dans la liste !");
+		throw EXCLevee;
+	}
+
+	if (bTestPresenceSommetDestination == false)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
+		EXCLevee.EXCmodifier_message("Le sommet de destination n'a pas été trouvé dans la liste !");
 		throw EXCLevee;
 	}
 
 	CArc* pARCarcAjout = new CArc(iNumeroSommetDestination);
-	pGRAListeSommet[iBoucle - 1].SOMAjouterArcArrivant(pARCarcAjout);
+	pGRAListeSommet[iIndiceSommetDepart].SOMAjouterArcSortant(pARCarcAjout);
 }
 
+//mettre des try catchs
 void CGraphe::GRAModifierArc(int iAncienSommetDepart, int iAncienSommetDestination, int iNouveauSommetDepart, int iNouveauSommetDestination)
-{
-
+{	
+	GRASupprimerArc(iAncienSommetDepart, iAncienSommetDestination);
+	GRAAjouterArc(iNouveauSommetDepart, iNouveauSommetDestination);
 }
 
 void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestination)
 {
+	bool bTestPresenceSommetDepart = false;
+	bool bTestPresenceSommetDestination = false;
+	unsigned int uiBoucleSommet, uiIndiceSommetDepart, uiIndiceSommetDestination;
 
+	for (uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet || bTestPresenceSommetDepart == false; uiBoucleSommet++)
+	{
+		if (int(pGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDepart)
+		{
+			bTestPresenceSommetDepart = true;
+			uiIndiceSommetDepart = uiBoucleSommet;
+		}
+		if (int(pGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDestination)
+		{
+			bTestPresenceSommetDestination = true;
+			uiIndiceSommetDestination = uiBoucleSommet;
+		}
+	}
+
+	if (bTestPresenceSommetDepart == false)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
+		EXCLevee.EXCmodifier_message("Le sommet de départ n'est pas dans la liste !");
+		throw EXCLevee;
+	}
+
+	if (bTestPresenceSommetDestination == false)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
+		EXCLevee.EXCmodifier_message("Le sommet de destination n'est pas dans la liste !");
+		throw EXCLevee;
+	}
+
+	bool bTestPresenceArc = false;
+	unsigned int uiBoucleArc, uiIndiceArc;
+
+	for (uiBoucleArc = 1; uiBoucleArc <= pGRAListeSommet[uiIndiceSommetDepart].SOMLireNombreArcSortant() || bTestPresenceArc == false; uiBoucleArc++)
+	{
+		if (pGRAListeSommet[uiIndiceSommetDepart].SOMLireArcSortant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDestination)
+		{
+			bTestPresenceArc = true;
+			uiIndiceArc = uiBoucleArc;
+		}
+	}
+
+	if (bTestPresenceArc == false)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
+		EXCLevee.EXCmodifier_message("L'arc n'est pas dans la liste des sortants du sommet!");
+		throw EXCLevee;
+	}
+
+	pGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcArrivant(uiIndiceArc);
 }
 
 CGraphe CGraphe::GRAInverseGraphe()
@@ -205,5 +278,22 @@ CGraphe CGraphe::GRAInverseGraphe()
 
 void CGraphe::GRAAfficherGraphe()
 {
-
+	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet; uiBoucleSommet++)
+	{
+		std::cout << "*************************" << std::endl;
+		std::cout << "    Sommet numero : " << pGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet() << std::endl;
+		std::cout << "Liste arcs arrivant : " << std::endl;
+		for (unsigned int uiBoucleArcArrivant = 1; uiBoucleArcArrivant <= pGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
+		{
+			std::cout << "Arc numero : " << uiBoucleArcArrivant << std::endl;
+			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
+		}
+		std::cout << std::endl << "Liste arcs sortant : " << std::endl;
+		for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= pGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcSortant++)
+		{
+			std::cout << "Arc numero : " << uiBoucleArcSortant << std::endl;
+			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
+		}
+		std::cout << "*************************" << std::endl << std::endl;
+	}
 }
