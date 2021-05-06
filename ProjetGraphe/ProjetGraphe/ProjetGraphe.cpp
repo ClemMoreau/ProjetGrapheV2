@@ -5,37 +5,26 @@ using namespace std;
 
 int main()
 {
-	bool b = false;
-	bool b2 = false;
-	int i;
-	for ( i = 0; i < 4 || b == false; i++)
-	{
-		if (i == 2)
-		{
-			b = true;
-		}
-		if (i == 1)
-		{
-			b2 = true;
-		}
-	}
-
-
-
-
-
-
-
 	CGraphe GRAgraphe;
+	CSommet SOMSommet1(1), SOMSommet2(2), SOMSommet3(3);
 
-	CSommet SOMSommet(1);
+	GRAgraphe.GRAAjouterSommet(SOMSommet1);
+	GRAgraphe.GRAAjouterSommet(SOMSommet2);
+	GRAgraphe.GRAAjouterSommet(SOMSommet3);
 
-	CArc* ARCarc1 = new CArc(1);
-	SOMSommet.SOMAjouterArcArrivant(ARCarc1);
+	GRAgraphe.GRAAjouterArc(1, 3);
+	GRAgraphe.GRAAjouterArc(1, 2);
+	GRAgraphe.GRAAjouterArc(2, 3);
+	GRAgraphe.GRAAjouterArc(3, 1);
 
-	GRAgraphe.GRAAjouterSommet(SOMSommet);
-	for (int i = 0; i < 4; i++)
-		GRAgraphe.GRAAfficherGraphe();
+	cout << "GRAgraphe" << endl;
+	GRAgraphe.GRAAfficherGraphe();
+
+	GRAgraphe.GRASupprimerArc(3, 1);
+	GRAgraphe.GRAModifierArc(2, 3, 3, 2);
+
+	cout << "GRAgraphe" << endl;
+	GRAgraphe.GRAAfficherGraphe();
 
 	return 0;
 }

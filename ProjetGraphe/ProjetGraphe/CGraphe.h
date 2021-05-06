@@ -62,7 +62,7 @@ public :
 	/*********************************************************
 	 Retourne la liste des sommets du graphe
 	 *********************************************************/
-	CSommet* GRALireListeSommet();
+	CSommet* GRALireListeSommet(); ///surêment a retirer
 
 	/*********************************************************
 	 Retourne le sommet d'indice iIndice 
@@ -83,7 +83,7 @@ public :
 	 Modifie le sommet d'indice iIndice 
 	 dans la liste des sommets du graphe
 	 *********************************************************/
-	void GRAModifierSommet(int iIndice, CSommet SOMSommet);
+	void GRAModifierSommet(int iIndice, CSommet& SOMSommet);
 
 	/*********************************************************
 	 Supprime le sommet d'indice iIndice
@@ -107,9 +107,9 @@ public :
 	 *********************************************************/
 	void GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestination);
 
-			/************
-			 * METHODES *
-			 ************/
+					/************
+					 * METHODES *
+					 ************/
 
 	/*********************************************************
 	Inverse l'orientation de tous les arcs de chaque sommets du graphe
@@ -120,6 +120,14 @@ public :
 	Affiche le graphe dans le console
 	*********************************************************/
 	void GRAAfficherGraphe();
+
+					/**************
+					 * SURCHARGES *
+					 **************/
+	/*********************************************************
+	Surcharge de l'opérateur d'affectation pour la classe CGraphe
+	*********************************************************/
+	CGraphe& operator=(CGraphe& GRAGraphe);
 };
 #endif //GRA
 

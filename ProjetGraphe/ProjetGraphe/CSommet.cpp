@@ -50,7 +50,7 @@ CSommet::CSommet(CSommet& SOMSommet)
 		{
 			for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcArrivant; iBoucle++)
 			{
-				*(ppARCSOMArcArrivant + iBoucle) = new CArc(*SOMSommet.ppARCSOMArcArrivant[iBoucle]);
+				ppARCSOMArcArrivant[iBoucle] = new CArc(*SOMSommet.ppARCSOMArcArrivant[iBoucle]);
 			}
 		}
 			/// Sinon une exception est levé
@@ -80,7 +80,7 @@ CSommet::CSommet(CSommet& SOMSommet)
 		{
 			for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcSortant; iBoucle++)
 			{
-				*(ppARCSOMArcSortant + iBoucle) = new CArc(*SOMSommet.ppARCSOMArcSortant[iBoucle]);
+				ppARCSOMArcSortant[iBoucle] = new CArc(*SOMSommet.ppARCSOMArcSortant[iBoucle]);
 			}
 		}
 			/// Sinon une exception est levé
@@ -285,14 +285,6 @@ void CSommet::SOMAjouterArcArrivant(CArc* pARCArc)
 		EXCLevee.EXCmodifier_message("Le paramètre à rajouter dans la liste est null !");
 		throw(EXCLevee);
 	}
-	/*un arc arrivant à forcément dans sa destination le sommet courant?*/
-	/*if (pARCArc->ARCLireDestination() != uiSOMNumero)
-	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(destination_incohérente);
-		EXCLevee.EXCmodifier_message("Un arc arrivant doit avoir pour destination le sommet courant !");
-		throw(EXCLevee);
-	}*/
 
 	ppARCSOMArcArrivant = (CArc**) realloc(ppARCSOMArcArrivant, sizeof(CArc*) * (uiSOMNbArcArrivant + 1));
 		/// Si l'allocation à réussi ajout de l'arc en fin de liste et actualisation du nombre d'arc entrant

@@ -31,9 +31,9 @@ CGraphe::CGraphe(CGraphe& GRAGraphe)
 {
 	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
 
-	pGRAListeSommet = new CSommet[uiGRANbSommet];
+	pGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
 
-	for (unsigned int iBoucle = 0; iBoucle < uiGRANbSommet; iBoucle++)
+	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
 		pGRAListeSommet[uiGRANbSommet] = GRAGraphe.pGRAListeSommet[uiGRANbSommet];
 	}
@@ -54,14 +54,14 @@ CGraphe::CGraphe(int iNombreSommet)
 {
 	uiGRANbSommet = iNombreSommet;
 
-	pGRAListeSommet = new CSommet[uiGRANbSommet];
+	pGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
 }///peut être à suppr
 
 CGraphe::~CGraphe()
 {
 	uiGRANbSommet = 0;
 
-	delete[] pGRAListeSommet;
+	free(pGRAListeSommet);
 }
 
 /*********************************************************
@@ -93,30 +93,22 @@ CSommet CGraphe::GRALireSommet(int iIndice)
 //ATTENTION FAIRE GAFFE : MAYBE COMME SOMRAJOUTERARC FAUDRA METTRE DES POINTEURS SINON CA PEUT BUGUER?
 void CGraphe::GRAAjouterSommet(CSommet& SOMSommet)
 {
-	CSommet* pSOMListeSommetTempo = new CSommet[uiGRANbSommet + 1];
-	if (pSOMListeSommetTempo == nullptr)
+	pGRAListeSommet = (CSommet*) realloc(pGRAListeSommet, (uiGRANbSommet + 1) * sizeof(CSommet));
+	if (pGRAListeSommet != nullptr)
+	{
+		pGRAListeSommet[uiGRANbSommet] = SOMSommet;
+		uiGRANbSommet++;
+	}
+	else
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(echec_malloc);
 		EXCLevee.EXCmodifier_message("Echec realloc !");
 		throw(EXCLevee);
 	}
-
-	if (pGRAListeSommet != nullptr)
-	{
-		for (unsigned int iBoucle = 0; iBoucle < uiGRANbSommet + 1; iBoucle++)
-		{
-			pSOMListeSommetTempo[iBoucle] = pGRAListeSommet[iBoucle];
-		}
-		delete[] pGRAListeSommet;
-	}
-	pGRAListeSommet = pSOMListeSommetTempo;
-	pGRAListeSommet[uiGRANbSommet] = SOMSommet;
-	uiGRANbSommet++;
-	pSOMListeSommetTempo = nullptr;
 }
 
-void CGraphe::GRAModifierSommet(int iIndice, CSommet SOMSommet)
+void CGraphe::GRAModifierSommet(int iIndice, CSommet& SOMSommet)
 {
 	if (iIndice < 0 || iIndice > int(uiGRANbSommet))
 	{
@@ -126,7 +118,7 @@ void CGraphe::GRAModifierSommet(int iIndice, CSommet SOMSommet)
 		throw(EXCLevee);
 	}
 
-	pGRAListeSommet[iIndice] = SOMSommet;
+	pGRAListeSommet[iIndice - 1] = SOMSommet;
 }
 
 void CGraphe::GRASupprimerSommet(int iIndice)
@@ -146,20 +138,34 @@ void CGraphe::GRASupprimerSommet(int iIndice)
 		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
-
-	CSommet* pSOMListeSommetTempo = new CSommet[uiGRANbSommet - 1];
-
-	for (unsigned int iBoucle = 0; iBoucle < uiGRANbSommet - 1; iBoucle++)
-	{
-		if (iBoucle != iIndice)
-		{
-			pSOMListeSommetTempo[iBoucle] = pGRAListeSommet[iBoucle + 1];
-		}
-	}
-	delete[] pGRAListeSommet;
-	pGRAListeSommet = pSOMListeSommetTempo;
-	pSOMListeSommetTempo = nullptr;
 	
+
+	for (unsigned int uiBoucle = iIndice; uiBoucle <= uiGRANbSommet - 1; uiBoucle++)
+	{
+		pGRAListeSommet[uiBoucle - 1] = pGRAListeSommet[uiBoucle];
+	}
+
+	if (uiGRANbSommet - 1 == 0)
+	{
+		free(pGRAListeSommet);
+		pGRAListeSommet = nullptr;
+	}
+	else
+	{
+		pGRAListeSommet = (CSommet*)realloc(pGRAListeSommet, (uiGRANbSommet - 1) * sizeof(CSommet));
+		if (pGRAListeSommet != nullptr)
+		{
+			uiGRANbSommet--;
+		}
+		else
+		{
+			CException EXCLevee;
+			EXCLevee.EXCmodifier_valeur(echec_malloc);
+			EXCLevee.EXCmodifier_message("Echec realloc !");
+			throw(EXCLevee);
+		}
+
+	}
 }
 
 //revoir les cas particuliers
@@ -167,20 +173,20 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 {
 	bool bTestPresenceSommetDepart = false;
 	bool bTestPresenceSommetDestination = false;
-	unsigned int iBoucle, iIndiceSommetDepart, uiIndiceSommetDestination;
+	unsigned int uiBoucle, uiIndiceSommetDepart, uiIndiceSommetDestination;
 
-	for (iBoucle = 0; iBoucle < uiGRANbSommet || bTestPresenceSommetDepart == false; iBoucle++)
+	for (uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
-		if (pGRAListeSommet[iBoucle].SOMLireNumeroSommet() == iNumeroSommetDepart)
+		if (pGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDepart)
 		{
 			bTestPresenceSommetDepart = true;
-			iIndiceSommetDepart = iBoucle;
+			uiIndiceSommetDepart = uiBoucle;
 		}
 
-		if (pGRAListeSommet[iBoucle].SOMLireNumeroSommet() == iNumeroSommetDestination)
+		if (pGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDestination)
 		{
 			bTestPresenceSommetDestination = true;
-			uiIndiceSommetDestination = iBoucle;
+			uiIndiceSommetDestination = uiBoucle;
 		}
 	}
 
@@ -200,8 +206,13 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 		throw EXCLevee;
 	}
 
-	CArc* pARCarcAjout = new CArc(iNumeroSommetDestination);
-	pGRAListeSommet[iIndiceSommetDepart].SOMAjouterArcSortant(pARCarcAjout);
+	//ajout partant en destination de iNumeroSometDestination
+	CArc* pARCArcPartant = new CArc(iNumeroSommetDestination);
+	pGRAListeSommet[uiIndiceSommetDepart].SOMAjouterArcSortant(pARCArcPartant);
+
+	//ajout arrivant en destination de iNumeroSommetDepart
+	CArc* pARCArcArrivant = new CArc(iNumeroSommetDepart);
+	pGRAListeSommet[uiIndiceSommetDestination].SOMAjouterArcArrivant(pARCArcArrivant);
 }
 
 //mettre des try catchs
@@ -247,19 +258,29 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 		throw EXCLevee;
 	}
 
-	bool bTestPresenceArc = false;
-	unsigned int uiBoucleArc, uiIndiceArc;
+	bool bTestPresenceArcSortant = false;
+	unsigned int uiBoucleArc, uiIndiceArcSortant, uiIndiceArcArrivant;
 
-	for (uiBoucleArc = 1; uiBoucleArc <= pGRAListeSommet[uiIndiceSommetDepart].SOMLireNombreArcSortant() || bTestPresenceArc == false; uiBoucleArc++)
+	for (uiBoucleArc = 1; uiBoucleArc <= pGRAListeSommet[uiIndiceSommetDepart].SOMLireNombreArcSortant() || bTestPresenceArcSortant == false; uiBoucleArc++)
 	{
 		if (pGRAListeSommet[uiIndiceSommetDepart].SOMLireArcSortant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDestination)
 		{
-			bTestPresenceArc = true;
-			uiIndiceArc = uiBoucleArc;
+			bTestPresenceArcSortant = true;
+			uiIndiceArcSortant = uiBoucleArc;
 		}
 	}
 
-	if (bTestPresenceArc == false)
+	bool bTestPresenceArcArrivant = false;
+	for (uiBoucleArc = 1; uiBoucleArc <= pGRAListeSommet[uiIndiceSommetDestination].SOMLireNombreArcArrivant() || bTestPresenceArcArrivant == false; uiBoucleArc++)
+	{
+		if (pGRAListeSommet[uiIndiceSommetDestination].SOMLireArcArrivant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDepart)
+		{
+			bTestPresenceArcArrivant = true;
+			uiIndiceArcArrivant = uiBoucleArc;
+		}
+	}
+
+	if (bTestPresenceArcSortant == false)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_introuvable);
@@ -267,7 +288,16 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 		throw EXCLevee;
 	}
 
-	pGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcArrivant(uiIndiceArc);
+	if (bTestPresenceArcArrivant == false)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
+		EXCLevee.EXCmodifier_message("L'arc n'est pas dans la liste des sortants du sommet!");
+		throw EXCLevee;
+	}
+
+	pGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcSortant(uiIndiceArcSortant);
+	pGRAListeSommet[uiIndiceSommetDestination].SOMSupprimerArcArrivant(uiIndiceArcArrivant);
 }
 
 CGraphe CGraphe::GRAInverseGraphe()
@@ -289,11 +319,28 @@ void CGraphe::GRAAfficherGraphe()
 			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << std::endl << "Liste arcs sortant : " << std::endl;
-		for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= pGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcSortant++)
+		for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= pGRAListeSommet[uiBoucleSommet].SOMLireNombreArcSortant(); uiBoucleArcSortant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcSortant << std::endl;
-			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
+			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << "*************************" << std::endl << std::endl;
 	}
+}
+
+/*********************************************************
+Surcharge de l'opérateur d'affectation pour la classe CGraphe
+*********************************************************/
+CGraphe& CGraphe::operator=(CGraphe& GRAGraphe)
+{
+	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
+
+	pGRAListeSommet = new CSommet[uiGRANbSommet];
+
+	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
+	{
+		pGRAListeSommet[uiGRANbSommet] = GRAGraphe.pGRAListeSommet[uiGRANbSommet];
+	}
+
+	return *this;
 }

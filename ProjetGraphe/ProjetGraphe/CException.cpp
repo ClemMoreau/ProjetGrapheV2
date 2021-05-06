@@ -83,7 +83,7 @@ void CException::EXCmodifier_message(const char* pcMessage)
 		}
 
 		int iConteur = strlen(pcMessage);
-		pcEXCMessage = (char*)malloc(iConteur + 1);
+		pcEXCMessage = (char*)malloc(sizeof(char) * (iConteur + 1));
 		int iBoucleCopie;
 		for (iBoucleCopie = 0; iBoucleCopie < iConteur; iBoucleCopie++)
 		{
