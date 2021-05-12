@@ -2,6 +2,9 @@
 #define GRA 0
 #include "CSommet.h"
 
+#define sommet_introuvable 401
+#define arc_introuvable 402
+
 class CGraphe {
 
 private:
@@ -9,8 +12,11 @@ private:
 			/*************
 			 * ATTRIBUTS *
 			 *************/
+	/*Nombre de sommet dans le graphe*/
+	unsigned int uiGRANbSommet;
+
 	/*Liste des sommets du graphe*/
-	CSommet* pGRAListeSommet;
+	CSommet* pSOMGRAListeSommet;
 
 public :
 
@@ -29,6 +35,12 @@ public :
 	*********************************************************/
 	CGraphe(CGraphe& GRAGraphe);
 
+	/*********************************************************
+	Constructeur de la classe CGraphe
+	prenant en paramètre un entier
+	*********************************************************/
+	CGraphe(int iNombreSommet);
+
 			/***************
 			 * DESTRUCTEUR *
 			 ***************/
@@ -43,9 +55,14 @@ public :
 			 ***********/
 
 	/*********************************************************
+	Retourne la liste des sommets du graphe
+	*********************************************************/
+	unsigned int GRALireNombreSommet();
+
+	/*********************************************************
 	 Retourne la liste des sommets du graphe
 	 *********************************************************/
-	CSommet* GRALireListeSommet();
+	CSommet* GRALireListeSommet(); ///surêment a retirer
 
 	/*********************************************************
 	 Retourne le sommet d'indice iIndice 
@@ -60,13 +77,13 @@ public :
 	/*********************************************************
 	 Ajoute un sommet au graphe
 	 *********************************************************/
-	void GRAAjouterSommet(CSommet SOMSommet);
+	void GRAAjouterSommet(CSommet& SOMSommet);
 
 	/*********************************************************
 	 Modifie le sommet d'indice iIndice 
 	 dans la liste des sommets du graphe
 	 *********************************************************/
-	void GRAModifierSommet(int iIndice, CSommet SOMSommet);
+	void GRAModifierSommet(int iIndice, CSommet& SOMSommet);
 
 	/*********************************************************
 	 Supprime le sommet d'indice iIndice
@@ -90,9 +107,9 @@ public :
 	 *********************************************************/
 	void GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestination);
 
-			/************
-			 * METHODES *
-			 ************/
+					/************
+					 * METHODES *
+					 ************/
 
 	/*********************************************************
 	Inverse l'orientation de tous les arcs de chaque sommets du graphe
@@ -103,6 +120,14 @@ public :
 	Affiche le graphe dans le console
 	*********************************************************/
 	void GRAAfficherGraphe();
+
+					/**************
+					 * SURCHARGES *
+					 **************/
+	/*********************************************************
+	Surcharge de l'opérateur d'affectation pour la classe CGraphe
+	*********************************************************/
+	CGraphe& operator=(CGraphe& GRAGraphe);
 };
 #endif //GRA
 

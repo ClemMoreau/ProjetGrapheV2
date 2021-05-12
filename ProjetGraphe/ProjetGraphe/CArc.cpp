@@ -7,7 +7,7 @@ CArc::CArc()
 
 CArc::CArc(CArc &ARCarc)
 {
-	uiARDestination = ARCarc.ARCLireDestination();
+	uiARDestination = ARCarc.uiARDestination;
 }
 
 CArc::CArc(int iDestination)
@@ -24,7 +24,7 @@ CArc::CArc(int iDestination)
 
 CArc::~CArc()
 {
-
+	uiARDestination = 0;
 }
 
 unsigned int CArc::ARCLireDestination()

@@ -7,6 +7,7 @@
 #define destination_incohérente 303
 #define argument_null 304
 #define echec_malloc 305
+#define liste_vide 306
 
 class CSommet {
 
@@ -74,7 +75,7 @@ public:
 	/*********************************************************
 	Retourne le nombre d'arc arrivant du sommet
 	*********************************************************/
-	int SOMLireNombreArcArrivant();
+	unsigned int SOMLireNombreArcArrivant();
 
 	/*********************************************************
 	Retourne l'arc arrivant à l'indice iIndice 
@@ -85,7 +86,7 @@ public:
 	/*********************************************************
 	Retourne le nombre d'arc sortant du sommet
 	*********************************************************/
-	int SOMLireNombreArcSortant();
+	unsigned int SOMLireNombreArcSortant();
 
 	/*********************************************************
 	Retourne l'arc sortant à l'indice iIndice
@@ -136,11 +137,19 @@ public:
 			 * METHODES *
 			 ************/
 
-
 	/*********************************************************
 	Inverse l'orientation de tous les arcs reliés au sommet
 	*********************************************************/
-	void SOMInverserArrivantPartant();
+	CSommet SOMInverserArrivantPartant();
+
+			/**************
+			 * SURCHARGES *
+			 **************/
+
+	/*********************************************************
+	Surcharge de l'opérateur d'affectation pour la classe CSommet
+	*********************************************************/
+	CSommet& operator=(CSommet& SOMSommet);
 };
 
 #endif // SOM

@@ -8,14 +8,15 @@ Nécessite: (rien)
 Sortie: (rien)
 Entraîne :	(l'objet est initlialisé avec 
 uiSOMNbArcArrivant = uiSOMNbArcSortant = 0 et
-ppARCSOMArcArrivant = ppARCSOMArcSortant = NULL) 
+ppARCSOMArcArrivant = ppARCSOMArcSortant = nullptr) 
 *********************************************************/
 CSommet::CSommet()
 {
 	// Initialisation des attributs
+	uiSOMNumero = 0;
 	uiSOMNbArcArrivant = uiSOMNbArcSortant = 0;
-	ppARCSOMArcArrivant = NULL;
-	ppARCSOMArcSortant = NULL;
+	ppARCSOMArcArrivant = nullptr;
+	ppARCSOMArcSortant = nullptr;
 }
 
 /*********************************************************
@@ -31,46 +32,65 @@ de SOMSommet passé en paramètre) ou
 CSommet::CSommet(CSommet& SOMSommet)
 {
 	// Recopie du numéro du sommet
-	uiSOMNumero = SOMSommet.SOMLireNumeroSommet();
+	uiSOMNumero = SOMSommet.uiSOMNumero;
 
 	// Recopie de la liste des arcs arrivants au sommet
-	uiSOMNbArcArrivant = SOMSommet.SOMLireNombreArcArrivant();
-	ppARCSOMArcArrivant = (CArc**) realloc(ppARCSOMArcArrivant, sizeof(CArc*) * uiSOMNbArcArrivant);
-		/// Si l'allocation à réussi on copie la liste
-	if (ppARCSOMArcArrivant)
+	uiSOMNbArcArrivant = SOMSommet.uiSOMNbArcArrivant;
+		/// Si pas d'arc, pas d'allocation
+	if (uiSOMNbArcArrivant == 0)
 	{
-		for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcArrivant; iBoucle++)
-		{
-			*(ppARCSOMArcArrivant + iBoucle) = new CArc(*SOMSommet.SOMLireArcArrivant(iBoucle + 1));
-		}
+		ppARCSOMArcArrivant = nullptr;
 	}
-		/// Sinon une exception est levé
+		/// Sinon copie des arcs
 	else
 	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(echec_malloc);
-		EXCLevee.EXCmodifier_message("Echec realloc !");
-		throw(EXCLevee);
+		ppARCSOMArcArrivant = (CArc**) malloc(sizeof(CArc*) * uiSOMNbArcArrivant);
+			/// Si l'allocation à réussi on copie la liste
+		if (ppARCSOMArcArrivant != nullptr)
+		{
+			for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcArrivant; iBoucle++)
+			{
+				ppARCSOMArcArrivant[iBoucle] = new CArc(*SOMSommet.ppARCSOMArcArrivant[iBoucle]);
+			}
+		}
+			/// Sinon une exception est levé
+		else
+		{
+			CException EXCLevee;
+			EXCLevee.EXCmodifier_valeur(echec_malloc);
+			EXCLevee.EXCmodifier_message("Echec realloc !");
+			throw(EXCLevee);
+		}
 	}
 
 	// Recopie de la liste des arcs sortants du sommet
-	uiSOMNbArcSortant = SOMSommet.SOMLireNombreArcSortant();
-	ppARCSOMArcSortant = (CArc**) realloc(ppARCSOMArcSortant, sizeof(CArc*) * uiSOMNbArcSortant);
-		/// Si l'allocation à réussi on copie la liste
-	if (ppARCSOMArcSortant)
+	uiSOMNbArcSortant = SOMSommet.uiSOMNbArcSortant;
+		/// Si pas d'arc, pas d'allocation
+	if (uiSOMNbArcSortant == 0)
 	{
-		for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcSortant; iBoucle++)
-		{
-			*(ppARCSOMArcSortant + iBoucle) = new CArc(*SOMSommet.SOMLireArcSortant(iBoucle + 1));
-		}
+		ppARCSOMArcSortant = nullptr;
 	}
-		/// Sinon une exception est levé
+		/// Sinon copie des arcs
 	else
 	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(echec_malloc);
-		EXCLevee.EXCmodifier_message("Echec realloc !");
-		throw(EXCLevee);
+		ppARCSOMArcSortant = (CArc**) malloc(sizeof(CArc*) * uiSOMNbArcSortant);
+
+			/// Si l'allocation à réussi on copie la liste
+		if (ppARCSOMArcSortant != nullptr)
+		{
+			for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcSortant; iBoucle++)
+			{
+				ppARCSOMArcSortant[iBoucle] = new CArc(*SOMSommet.ppARCSOMArcSortant[iBoucle]);
+			}
+		}
+			/// Sinon une exception est levé
+		else
+		{
+			CException EXCLevee;
+			EXCLevee.EXCmodifier_valeur(echec_malloc);
+			EXCLevee.EXCmodifier_message("Echec realloc !");
+			throw(EXCLevee);
+		}
 	}
 }	
 
@@ -85,10 +105,17 @@ Entraîne :	(l'objet est initlialisé avec uiSOMNumero = iNumeroSommet)
 *********************************************************/
 CSommet::CSommet(int iNumeroSommet)
 {
+	if (iNumeroSommet < 0)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(numero_negatif);
+		EXCLevee.EXCmodifier_message("Numero sommet negatif !");
+		throw(EXCLevee);
+	}
 	uiSOMNumero = iNumeroSommet;
 	uiSOMNbArcArrivant = uiSOMNbArcSortant = 0;
-	ppARCSOMArcArrivant = NULL;
-	ppARCSOMArcSortant = NULL;
+	ppARCSOMArcArrivant = nullptr;
+	ppARCSOMArcSortant = nullptr;
 }
 
 /*********************************************************
@@ -101,18 +128,35 @@ Entraîne : (l'espace mémoire des listes des arcs est libéré)
 *********************************************************/
 CSommet::~CSommet()
 {
+	uiSOMNumero = 0;
 	/*à modifier passer par suppr arc qui appel destructeur*/
-	for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcArrivant; iBoucle++) //vérifier fuite (tester si commencer à 1 mieux)
+	if (ppARCSOMArcArrivant != nullptr)
 	{
-		free(*(ppARCSOMArcArrivant + iBoucle));
+		unsigned int uiNbArcArrivantTempo = uiSOMNbArcArrivant;
+		for (unsigned int iBoucle = 0; iBoucle < uiNbArcArrivantTempo; iBoucle++) //vérifier fuite (tester si commencer à 1 mieux)
+		{
+			if (ppARCSOMArcArrivant[iBoucle] != nullptr)
+			{
+				delete(ppARCSOMArcArrivant[iBoucle]);
+				uiSOMNbArcArrivant--;
+			}
+		}
+		free(ppARCSOMArcArrivant);
 	}
-	//free(ppARCSOMArcArrivant); ça fais planter wtf
 
-	for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcSortant; iBoucle++) //vérifier fuite (tester si commencer à 1 mieux)
+	if (ppARCSOMArcSortant)
 	{
-		free(*(ppARCSOMArcSortant + iBoucle));
+		unsigned int uiNbArcSortantTempo = uiSOMNbArcSortant;
+		for (unsigned int iBoucle = 0; iBoucle < uiNbArcSortantTempo; iBoucle++) //vérifier fuite (tester si commencer à 1 mieux)
+		{
+			if (ppARCSOMArcSortant[iBoucle] != nullptr)
+			{
+				delete(ppARCSOMArcSortant[iBoucle]);
+				uiSOMNbArcSortant--;
+			}
+		}
+		free(ppARCSOMArcSortant);
 	}
-	//free(ppARCSOMArcSortant);
 }
 
 /*********************************************************
@@ -136,7 +180,7 @@ Nécessite: (rien)
 Sortie: int uiSOMNbArcArrivant : le nombre d'arc arrivant au sommet
 Entraîne : (rien)
 *********************************************************/
-int CSommet::SOMLireNombreArcArrivant()
+unsigned int CSommet::SOMLireNombreArcArrivant()
 {
 	return uiSOMNbArcArrivant;
 }
@@ -154,14 +198,14 @@ Entraîne : (CArcs* en sortie) ou (Exception indice_incorrecte levée)
 CArc* CSommet::SOMLireArcArrivant(int iIndice)
 {
 	// Test indice compris dans les bornes du tableau
-	if (iIndice < 0 || iIndice > SOMLireNombreArcArrivant())
+	if (iIndice < 0 || iIndice > int(SOMLireNombreArcArrivant()))
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
 		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
-	return *(ppARCSOMArcArrivant + iIndice - 1);
+	return ppARCSOMArcArrivant[iIndice - 1];
 }
 
 /*********************************************************
@@ -172,7 +216,7 @@ Nécessite: (rien)
 Sortie: int uiSOMNbArcSortant : le nombre d'arc sortant au sommet
 Entraîne : (rien)
 *********************************************************/
-int CSommet::SOMLireNombreArcSortant()
+unsigned int CSommet::SOMLireNombreArcSortant()
 {
 	return uiSOMNbArcSortant;
 }
@@ -189,14 +233,14 @@ Entraîne : (CArcs* en sortie) ou (Exception indice_incorrecte levée)
 CArc* CSommet::SOMLireArcSortant(int iIndice)
 {
 	// Test indice compris dans les bornes du tableau
-	if (iIndice < 0 || iIndice > SOMLireNombreArcSortant())
+	if (iIndice < 0 || iIndice > int(SOMLireNombreArcSortant()))
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
 		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
-	return *(ppARCSOMArcSortant + iIndice - 1);
+	return ppARCSOMArcSortant[iIndice - 1];
 }
 
 /*********************************************************
@@ -224,7 +268,7 @@ void CSommet::SOMModifierNumeroSommet(int iNumero)
 Ajoute un arc dans la liste des arcs arrivants
 *********************************************************
 Entrée: CArc* pARCArc : un pointeur vers l'arc à ajouter
-Nécessite: (rien)
+Nécessite: (pARCArc doit être un pointeur vers un arc et non l'adresse d'un arc)
 Sortie: (rien)
 Entraîne : 
 (pARCArc à été ajouter en fin de la liste) et (le tableau a été réallouer) ou
@@ -234,27 +278,19 @@ Entraîne :
 void CSommet::SOMAjouterArcArrivant(CArc* pARCArc) 
 {
 	// Test paramètre non null
-	if (!pARCArc)
+	if (pARCArc == nullptr)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(argument_null);
 		EXCLevee.EXCmodifier_message("Le paramètre à rajouter dans la liste est null !");
 		throw(EXCLevee);
 	}
-	/*un arc arrivant à forcément dans sa destination le sommet courant?*/
-	/*if (pARCArc->ARCLireDestination() != uiSOMNumero)
-	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(destination_incohérente);
-		EXCLevee.EXCmodifier_message("Un arc arrivant doit avoir pour destination le sommet courant !");
-		throw(EXCLevee);
-	}*/
 
 	ppARCSOMArcArrivant = (CArc**) realloc(ppARCSOMArcArrivant, sizeof(CArc*) * (uiSOMNbArcArrivant + 1));
-		/// Si l'allocation à réussi on rajoute l'arc
-	if (ppARCSOMArcArrivant)
+		/// Si l'allocation à réussi ajout de l'arc en fin de liste et actualisation du nombre d'arc entrant
+	if (ppARCSOMArcArrivant != nullptr)
 	{
-		*(ppARCSOMArcArrivant + uiSOMNbArcArrivant) = pARCArc;
+		ppARCSOMArcArrivant[uiSOMNbArcArrivant] = pARCArc;	///Plus mieux de créer une copie vu que pas de pointeur? (éviter trou mémoire)
 		uiSOMNbArcArrivant++;
 	}
 		/// Sinon une exception est levé
@@ -298,7 +334,7 @@ void CSommet::SOMModifierArcArrivant(int iIndice, int iDestination)
 		throw(EXCLevee);
 	}
 
-	SOMLireArcArrivant(iIndice)->ARCModifierDestination(iDestination); //voir pour modifier
+	ppARCSOMArcArrivant[iIndice - 1]->ARCModifierDestination(iDestination);
 }
 
 /*********************************************************
@@ -314,6 +350,14 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMSupprimerArcArrivant(int iIndice)
 {
+	if (uiSOMNbArcArrivant == 0)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(liste_vide);
+		EXCLevee.EXCmodifier_message("Liste arc entrant vide !");
+		throw(EXCLevee);
+	}
+
 	// Test indice dans tableau
 	if (iIndice < 0 || iIndice > int(uiSOMNbArcArrivant))
 	{
@@ -324,18 +368,22 @@ void CSommet::SOMSupprimerArcArrivant(int iIndice)
 	}
 
 	//on décale le tableau
-	for (unsigned int iBoucle = iIndice; iBoucle < uiSOMNbArcArrivant - 1; iBoucle++)
+	for (unsigned int iBoucle = iIndice - 1; iBoucle <= uiSOMNbArcArrivant - 1; iBoucle++)
 	{
-		*(ppARCSOMArcArrivant + iBoucle) = *(ppARCSOMArcArrivant + iBoucle + 1);
+		ppARCSOMArcArrivant[iBoucle] = ppARCSOMArcArrivant[iBoucle + 1];
 	}
 	//on réallou
 	ppARCSOMArcArrivant = (CArc**)realloc(ppARCSOMArcArrivant, sizeof(CArc*) * (uiSOMNbArcArrivant - 1));
-	if (!ppARCSOMArcSortant)
+	if (ppARCSOMArcArrivant == nullptr && uiSOMNbArcArrivant - 1 > 0)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(echec_malloc);
 		EXCLevee.EXCmodifier_message("Echec realloc !");
 		throw(EXCLevee);
+	}
+	else
+	{
+		uiSOMNbArcArrivant--;
 	}
 }
 
@@ -343,7 +391,7 @@ void CSommet::SOMSupprimerArcArrivant(int iIndice)
 Ajoute un arc dans la liste des arcs sortants
 *********************************************************
 Entrée: CArc* pARCArc : un pointeur vers l'arc à ajouter
-Nécessite: (rien)
+Nécessite: (pARCArc doit être un pointeur vers un arc et non l'adresse d'un arc)
 Sortie: (rien)
 Entraîne :
 (pARCArc à été ajouter en fin de la liste) et (le tableau a été réallouer) ou
@@ -353,7 +401,7 @@ Entraîne :
 void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 {
 	// Test paramètre non null
-	if (!pARCArc)
+	if (pARCArc == nullptr)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(argument_null);
@@ -363,9 +411,9 @@ void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 
 	ppARCSOMArcSortant = (CArc**)realloc(ppARCSOMArcSortant, sizeof(CArc*) * (uiSOMNbArcSortant + 1));
 		/// Si l'allocation à réussi on rajoute l'arc
-	if (ppARCSOMArcSortant)
+	if (ppARCSOMArcSortant != nullptr)
 	{
-		*(ppARCSOMArcSortant + uiSOMNbArcSortant) = pARCArc;
+		ppARCSOMArcSortant[uiSOMNbArcSortant] = pARCArc;	///Plus mieux de créer une copie vu que pas de pointeur? (éviter trou mémoire)
 		uiSOMNbArcSortant++;
 	}
 		/// Sinon une exception est levé
@@ -409,7 +457,7 @@ void CSommet::SOMModifierArcSortant(int iIndice, int iDestination)
 		throw(EXCLevee);
 	}
 
-	SOMLireArcSortant(iIndice)->ARCModifierDestination(iDestination);
+	ppARCSOMArcSortant[iIndice - 1]->ARCModifierDestination(iDestination);
 }
 
 
@@ -425,6 +473,14 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMSupprimerArcSortant(int iIndice)
 {
+	if (uiSOMNbArcSortant == 0)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(liste_vide);
+		EXCLevee.EXCmodifier_message("Liste arc sortant vide !");
+		throw(EXCLevee);
+	}
+
 	// Test indice dans la liste
 	if (0 > iIndice || iIndice > int(uiSOMNbArcSortant))
 	{
@@ -437,30 +493,104 @@ void CSommet::SOMSupprimerArcSortant(int iIndice)
 	//on décale le tableau
 	for (unsigned int iBoucle = iIndice; iBoucle < uiSOMNbArcSortant - 1; iBoucle++)
 	{
-		*(ppARCSOMArcSortant + iBoucle) = *(ppARCSOMArcSortant + iBoucle + 1);
+		ppARCSOMArcSortant[iBoucle] = ppARCSOMArcSortant[iBoucle + 1];
 	}
 	//on réallou
 	ppARCSOMArcSortant = (CArc**)realloc(ppARCSOMArcSortant, sizeof(CArc*) * (uiSOMNbArcSortant - 1));
-	if (!ppARCSOMArcSortant)
+	if (ppARCSOMArcSortant == nullptr && uiSOMNbArcSortant - 1 > 0)
 	{
-	CException EXCLevee;
-	EXCLevee.EXCmodifier_valeur(echec_malloc);
-	EXCLevee.EXCmodifier_message("Echec realloc !");
-	throw(EXCLevee);
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(echec_malloc);
+		EXCLevee.EXCmodifier_message("Echec realloc !");
+		throw(EXCLevee);
+	}
+	else
+	{
+		uiSOMNbArcSortant--;
 	}
 }
 
 /*********************************************************
 Inverse l'orientation de tous les arcs reliés au sommet
 *********************************************************
-Entrée: int iIndice : l'indice de l'arc à supprimer
+Entrée: (rien)
 Nécessite: (rien)
 Sortie: (rien)
 Entraîne :
-(l'arc à l'indice iIndice a été supprimer) et (le tableau a été réallouer) ou
+(les arcs arrivant et sortant sont inversé) ou
 (Exception indice_incorrecte levée)
 *********************************************************/
-void CSommet::SOMInverserArrivantPartant()
+CSommet CSommet::SOMInverserArrivantPartant()
 {
+	CSommet SOMSommet;
+	return SOMSommet;
+}
 
+/*********************************************************
+Surcharge de l'opérateur d'affectation pour la classe CSommet
+*********************************************************/
+CSommet& CSommet::operator=(CSommet& SOMSommet)
+{
+	// Recopie du numéro du sommet
+	uiSOMNumero = SOMSommet.uiSOMNumero;
+
+	// Recopie de la liste des arcs arrivants au sommet
+	uiSOMNbArcArrivant = SOMSommet.uiSOMNbArcArrivant;
+	/// Si pas d'arc, pas d'allocation
+	if (uiSOMNbArcArrivant == 0)
+	{
+		ppARCSOMArcArrivant = nullptr;
+	}
+	/// Sinon copie des arcs
+	else
+	{
+		ppARCSOMArcArrivant = (CArc**)malloc(sizeof(CArc*) * uiSOMNbArcArrivant);
+		/// Si l'allocation à réussi on copie la liste
+		if (ppARCSOMArcArrivant != nullptr)
+		{
+			for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcArrivant; iBoucle++)
+			{
+				*(ppARCSOMArcArrivant + iBoucle) = new CArc(*SOMSommet.ppARCSOMArcArrivant[iBoucle]);
+			}
+		}
+		/// Sinon une exception est levé
+		else
+		{
+			CException EXCLevee;
+			EXCLevee.EXCmodifier_valeur(echec_malloc);
+			EXCLevee.EXCmodifier_message("Echec realloc !");
+			throw(EXCLevee);
+		}
+	}
+
+	// Recopie de la liste des arcs sortants du sommet
+	uiSOMNbArcSortant = SOMSommet.uiSOMNbArcSortant;
+	/// Si pas d'arc, pas d'allocation
+	if (uiSOMNbArcSortant == 0)
+	{
+		ppARCSOMArcSortant = nullptr;
+	}
+	/// Sinon copie des arcs
+	else
+	{
+		ppARCSOMArcSortant = (CArc**)malloc(sizeof(CArc*) * uiSOMNbArcSortant);
+
+		/// Si l'allocation à réussi on copie la liste
+		if (ppARCSOMArcSortant != nullptr)
+		{
+			for (unsigned int iBoucle = 0; iBoucle < uiSOMNbArcSortant; iBoucle++)
+			{
+				*(ppARCSOMArcSortant + iBoucle) = new CArc(*SOMSommet.ppARCSOMArcSortant[iBoucle]);
+			}
+		}
+		/// Sinon une exception est levé
+		else
+		{
+			CException EXCLevee;
+			EXCLevee.EXCmodifier_valeur(echec_malloc);
+			EXCLevee.EXCmodifier_message("Echec realloc !");
+			throw(EXCLevee);
+		}
+	}
+	return *this;
 }
