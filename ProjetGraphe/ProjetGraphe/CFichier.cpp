@@ -1,4 +1,5 @@
 #include "CFichier.h"
+#include <iostream>
 
 /*********************************************************
 Constructeur par défaut de la classe CFichier
@@ -105,6 +106,71 @@ rempli avec le contenu du fichier
 *********************************************************/
 CGraphe CFichier::FICLireFichier()
 {
+	// Ouverture du fichier
+	ifstream fFichier(FICLireNomFichier());
+	if (!fFichier)
+	{
+		//On teste si l'ouverture c'est bien déroulé
+		CException EXCFichier;
+		EXCFichier.EXCmodifier_valeur(ouverture_fichier_impossible);
+		throw(EXCFichier);
+	}
+
+	//cdelim est notre séparateur, Utilisé pour la fonction strtok_s() 	   
+	char cdelim[] = "=";
+
+	char cNbSommet[100], cNbArc[100], cIgnore[200];
+
+	char *pcNbSommet,*pcNbArc;
+
+	char *pcElementsuivS = NULL, *pcElementsuivA = NULL;
+
+	fFichier >> cNbSommet;
+	fFichier >> cNbArc;
+	fFichier >> cIgnore;
+
+	char *pctempNbSommet = strtok_s(cNbSommet, cdelim, &pcElementsuivS);
+	char *pctempNbArc = strtok_s(cNbArc, cdelim, &pcElementsuivA);
+
+	while (pctempNbSommet != NULL)
+	{
+		if (pctempNbSommet != NULL)
+		{
+			pcNbSommet = pctempNbSommet;
+			pctempNbSommet = strtok_s(NULL, cdelim, &pcElementsuivS);
+		}
+		if (pctempNbArc != NULL)
+		{
+			pcNbArc = pctempNbArc;
+			pctempNbArc = strtok_s(NULL, cdelim, &pcElementsuivA);
+		}
+	}
+
+	char cSommet[100];
+	char *pctempNumeroSommet;
+	char *pcNumeroSommet;
+	char *pcElementsuivN;
+	unsigned int uiNbSommet = atoi(pcNbSommet);
+	unsigned int uiNbArc = atoi(pcNbArc);
+	unsigned int uiNumeroSommet;
+	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiNbSommet; ++uiBoucleSommet)
+	{
+		fFichier >> cSommet;
+		
+		char *pctempNumeroSommet = strtok_s(cSommet, cdelim, &pcElementsuivN);
+
+		while (pctempNumeroSommet != NULL)
+		{
+			pcNumeroSommet = pctempNumeroSommet;
+			pctempNumeroSommet = strtok_s(NULL, cdelim, &pcElementsuivN);
+		}
+		uiNumeroSommet = atoi(pcNumeroSommet);
+		CSommet SOMSommet(uiNumeroSommet);
+	}
+	for (unsigned int uiBoucleArc = 0; uiBoucleArc < uiNbArc; ++uiBoucleArc)
+	{
+
+	}
 	CGraphe GRAGraphe;
 	return GRAGraphe;
 }

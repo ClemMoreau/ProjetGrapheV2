@@ -10,6 +10,9 @@
 #include "CGraphe.h"
 
 #define nom_null 501
+#define ouverture_fichier_impossible 502
+
+using namespace std;
 
 class CFichier
 {
