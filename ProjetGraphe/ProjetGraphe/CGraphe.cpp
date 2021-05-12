@@ -7,13 +7,13 @@ Entrée:(rien)
 Nécessite:	(rien)
 Sortie: (rien)
 Entraîne :	(L'objet est initialisé avec 
-uiGRANbSommet = 0 et pGRAListeSommet = nullptr)
+uiGRANbSommet = 0 et pSOMGRAListeSommet = nullptr)
 *********************************************************/
 CGraphe::CGraphe()
 {
 	// Initialisation des attributs
 	uiGRANbSommet = 0;
-	pGRAListeSommet = nullptr;
+	pSOMGRAListeSommet = nullptr;
 }
 
 /*********************************************************
@@ -25,17 +25,17 @@ Nécessite:	(rien)
 Sortie: (rien)
 Entraîne :	(L'objet est initialisé avec
 uiGRANbSommet = GRAGraphe.uiGRANbSommet 
-et pGRAListeSommet = GRAGraphe.pGRAListeSommet)
+et pSOMGRAListeSommet = GRAGraphe.pSOMGRAListeSommet)
 *********************************************************/
 CGraphe::CGraphe(CGraphe& GRAGraphe)
 {
 	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
 
-	pGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
+	pSOMGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
 
 	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
-		pGRAListeSommet[uiGRANbSommet] = GRAGraphe.pGRAListeSommet[uiGRANbSommet];
+		pSOMGRAListeSommet[uiGRANbSommet] = GRAGraphe.pSOMGRAListeSommet[uiGRANbSommet];
 	}
 }
 
@@ -48,20 +48,20 @@ Nécessite:	(rien)
 Sortie: (rien)
 Entraîne :	(L'objet est initialisé avec
 uiGRANbSommet = iNombreSommet
-et pGRAListeSommet = GRAGraphe.pGRAListeSommet)
+et pSOMGRAListeSommet = GRAGraphe.pSOMGRAListeSommet)
 *********************************************************/
 CGraphe::CGraphe(int iNombreSommet)
 {
 	uiGRANbSommet = iNombreSommet;
 
-	pGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
+	pSOMGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
 }///peut être à suppr
 
 CGraphe::~CGraphe()
 {
 	uiGRANbSommet = 0;
 
-	free(pGRAListeSommet);
+	free(pSOMGRAListeSommet);
 }
 
 /*********************************************************
@@ -74,7 +74,7 @@ unsigned int CGraphe::GRALireNombreSommet()
 
 CSommet* CGraphe::GRALireListeSommet()
 {
-	return pGRAListeSommet;
+	return pSOMGRAListeSommet;
 }
 
 CSommet CGraphe::GRALireSommet(int iIndice)
@@ -87,16 +87,16 @@ CSommet CGraphe::GRALireSommet(int iIndice)
 		throw(EXCLevee);
 	}
 
-	return pGRAListeSommet[iIndice];
+	return pSOMGRAListeSommet[iIndice];
 }
 
 //ATTENTION FAIRE GAFFE : MAYBE COMME SOMRAJOUTERARC FAUDRA METTRE DES POINTEURS SINON CA PEUT BUGUER?
 void CGraphe::GRAAjouterSommet(CSommet& SOMSommet)
 {
-	pGRAListeSommet = (CSommet*) realloc(pGRAListeSommet, (uiGRANbSommet + 1) * sizeof(CSommet));
-	if (pGRAListeSommet != nullptr)
+	pSOMGRAListeSommet = (CSommet*) realloc(pSOMGRAListeSommet, (uiGRANbSommet + 1) * sizeof(CSommet));
+	if (pSOMGRAListeSommet != nullptr)
 	{
-		pGRAListeSommet[uiGRANbSommet] = SOMSommet;
+		pSOMGRAListeSommet[uiGRANbSommet] = SOMSommet;
 		uiGRANbSommet++;
 	}
 	else
@@ -118,7 +118,7 @@ void CGraphe::GRAModifierSommet(int iIndice, CSommet& SOMSommet)
 		throw(EXCLevee);
 	}
 
-	pGRAListeSommet[iIndice - 1] = SOMSommet;
+	pSOMGRAListeSommet[iIndice - 1] = SOMSommet;
 }
 
 void CGraphe::GRASupprimerSommet(int iIndice)
@@ -142,18 +142,18 @@ void CGraphe::GRASupprimerSommet(int iIndice)
 
 	for (unsigned int uiBoucle = iIndice; uiBoucle <= uiGRANbSommet - 1; uiBoucle++)
 	{
-		pGRAListeSommet[uiBoucle - 1] = pGRAListeSommet[uiBoucle];
+		pSOMGRAListeSommet[uiBoucle - 1] = pSOMGRAListeSommet[uiBoucle];
 	}
 
 	if (uiGRANbSommet - 1 == 0)
 	{
-		free(pGRAListeSommet);
-		pGRAListeSommet = nullptr;
+		free(pSOMGRAListeSommet);
+		pSOMGRAListeSommet = nullptr;
 	}
 	else
 	{
-		pGRAListeSommet = (CSommet*)realloc(pGRAListeSommet, (uiGRANbSommet - 1) * sizeof(CSommet));
-		if (pGRAListeSommet != nullptr)
+		pSOMGRAListeSommet = (CSommet*)realloc(pSOMGRAListeSommet, (uiGRANbSommet - 1) * sizeof(CSommet));
+		if (pSOMGRAListeSommet != nullptr)
 		{
 			uiGRANbSommet--;
 		}
@@ -177,13 +177,13 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 
 	for (uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
-		if (pGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDepart)
+		if (pSOMGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDepart)
 		{
 			bTestPresenceSommetDepart = true;
 			uiIndiceSommetDepart = uiBoucle;
 		}
 
-		if (pGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDestination)
+		if (pSOMGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDestination)
 		{
 			bTestPresenceSommetDestination = true;
 			uiIndiceSommetDestination = uiBoucle;
@@ -208,11 +208,11 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 
 	//ajout partant en destination de iNumeroSometDestination
 	CArc* pARCArcPartant = new CArc(iNumeroSommetDestination);
-	pGRAListeSommet[uiIndiceSommetDepart].SOMAjouterArcSortant(pARCArcPartant);
+	pSOMGRAListeSommet[uiIndiceSommetDepart].SOMAjouterArcSortant(pARCArcPartant);
 
 	//ajout arrivant en destination de iNumeroSommetDepart
 	CArc* pARCArcArrivant = new CArc(iNumeroSommetDepart);
-	pGRAListeSommet[uiIndiceSommetDestination].SOMAjouterArcArrivant(pARCArcArrivant);
+	pSOMGRAListeSommet[uiIndiceSommetDestination].SOMAjouterArcArrivant(pARCArcArrivant);
 }
 
 //mettre des try catchs
@@ -230,12 +230,12 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 
 	for (uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet || bTestPresenceSommetDepart == false; uiBoucleSommet++)
 	{
-		if (int(pGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDepart)
+		if (int(pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDepart)
 		{
 			bTestPresenceSommetDepart = true;
 			uiIndiceSommetDepart = uiBoucleSommet;
 		}
-		if (int(pGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDestination)
+		if (int(pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDestination)
 		{
 			bTestPresenceSommetDestination = true;
 			uiIndiceSommetDestination = uiBoucleSommet;
@@ -261,9 +261,9 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	bool bTestPresenceArcSortant = false;
 	unsigned int uiBoucleArc, uiIndiceArcSortant, uiIndiceArcArrivant;
 
-	for (uiBoucleArc = 1; uiBoucleArc <= pGRAListeSommet[uiIndiceSommetDepart].SOMLireNombreArcSortant() || bTestPresenceArcSortant == false; uiBoucleArc++)
+	for (uiBoucleArc = 1; uiBoucleArc <= pSOMGRAListeSommet[uiIndiceSommetDepart].SOMLireNombreArcSortant() || bTestPresenceArcSortant == false; uiBoucleArc++)
 	{
-		if (pGRAListeSommet[uiIndiceSommetDepart].SOMLireArcSortant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDestination)
+		if (pSOMGRAListeSommet[uiIndiceSommetDepart].SOMLireArcSortant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDestination)
 		{
 			bTestPresenceArcSortant = true;
 			uiIndiceArcSortant = uiBoucleArc;
@@ -271,9 +271,9 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	bool bTestPresenceArcArrivant = false;
-	for (uiBoucleArc = 1; uiBoucleArc <= pGRAListeSommet[uiIndiceSommetDestination].SOMLireNombreArcArrivant() || bTestPresenceArcArrivant == false; uiBoucleArc++)
+	for (uiBoucleArc = 1; uiBoucleArc <= pSOMGRAListeSommet[uiIndiceSommetDestination].SOMLireNombreArcArrivant() || bTestPresenceArcArrivant == false; uiBoucleArc++)
 	{
-		if (pGRAListeSommet[uiIndiceSommetDestination].SOMLireArcArrivant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDepart)
+		if (pSOMGRAListeSommet[uiIndiceSommetDestination].SOMLireArcArrivant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDepart)
 		{
 			bTestPresenceArcArrivant = true;
 			uiIndiceArcArrivant = uiBoucleArc;
@@ -296,8 +296,8 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 		throw EXCLevee;
 	}
 
-	pGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcSortant(uiIndiceArcSortant);
-	pGRAListeSommet[uiIndiceSommetDestination].SOMSupprimerArcArrivant(uiIndiceArcArrivant);
+	pSOMGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcSortant(uiIndiceArcSortant);
+	pSOMGRAListeSommet[uiIndiceSommetDestination].SOMSupprimerArcArrivant(uiIndiceArcArrivant);
 }
 
 CGraphe CGraphe::GRAInverseGraphe()
@@ -311,18 +311,18 @@ void CGraphe::GRAAfficherGraphe()
 	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet; uiBoucleSommet++)
 	{
 		std::cout << "*************************" << std::endl;
-		std::cout << "    Sommet numero : " << pGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet() << std::endl;
+		std::cout << "    Sommet numero : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet() << std::endl;
 		std::cout << "Liste arcs arrivant : " << std::endl;
-		for (unsigned int uiBoucleArcArrivant = 1; uiBoucleArcArrivant <= pGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
+		for (unsigned int uiBoucleArcArrivant = 1; uiBoucleArcArrivant <= pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcArrivant << std::endl;
-			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
+			std::cout << "	Destination : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << std::endl << "Liste arcs sortant : " << std::endl;
-		for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= pGRAListeSommet[uiBoucleSommet].SOMLireNombreArcSortant(); uiBoucleArcSortant++)
+		for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcSortant(); uiBoucleArcSortant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcSortant << std::endl;
-			std::cout << "	Destination : " << pGRAListeSommet[uiBoucleSommet].SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
+			std::cout << "	Destination : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << "*************************" << std::endl << std::endl;
 	}
@@ -335,11 +335,11 @@ CGraphe& CGraphe::operator=(CGraphe& GRAGraphe)
 {
 	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
 
-	pGRAListeSommet = new CSommet[uiGRANbSommet];
+	pSOMGRAListeSommet = new CSommet[uiGRANbSommet];
 
 	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
-		pGRAListeSommet[uiGRANbSommet] = GRAGraphe.pGRAListeSommet[uiGRANbSommet];
+		pSOMGRAListeSommet[uiGRANbSommet] = GRAGraphe.pSOMGRAListeSommet[uiGRANbSommet];
 	}
 
 	return *this;

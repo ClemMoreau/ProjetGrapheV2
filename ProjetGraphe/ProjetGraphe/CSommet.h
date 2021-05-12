@@ -140,7 +140,7 @@ public:
 	/*********************************************************
 	Inverse l'orientation de tous les arcs reliés au sommet
 	*********************************************************/
-	void SOMInverserArrivantPartant();
+	CSommet SOMInverserArrivantPartant();
 
 			/**************
 			 * SURCHARGES *

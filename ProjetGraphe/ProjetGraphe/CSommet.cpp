@@ -520,9 +520,10 @@ Entraîne :
 (les arcs arrivant et sortant sont inversé) ou
 (Exception indice_incorrecte levée)
 *********************************************************/
-void CSommet::SOMInverserArrivantPartant()
+CSommet CSommet::SOMInverserArrivantPartant()
 {
-
+	CSommet SOMSommet;
+	return SOMSommet;
 }
 
 /*********************************************************

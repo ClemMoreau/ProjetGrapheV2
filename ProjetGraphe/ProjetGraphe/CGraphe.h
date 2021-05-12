@@ -16,7 +16,7 @@ private:
 	unsigned int uiGRANbSommet;
 
 	/*Liste des sommets du graphe*/
-	CSommet* pGRAListeSommet;
+	CSommet* pSOMGRAListeSommet;
 
 public :
 
