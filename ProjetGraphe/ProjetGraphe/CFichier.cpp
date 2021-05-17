@@ -106,6 +106,7 @@ rempli avec le contenu du fichier
 *********************************************************/
 CGraphe CFichier::FICLireFichier()
 {
+	/*
 	// Ouverture du fichier
 	ifstream fFichier(FICLireNomFichier());
 	if (!fFichier)
@@ -171,6 +172,7 @@ CGraphe CFichier::FICLireFichier()
 	{
 
 	}
+	*/
 	CGraphe GRAGraphe;
 	return GRAGraphe;
 }

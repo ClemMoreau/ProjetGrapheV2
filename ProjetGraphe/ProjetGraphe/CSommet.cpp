@@ -7,6 +7,7 @@ Entrée: (rien)
 Nécessite: (rien)
 Sortie: (rien)
 Entraîne :	(l'objet est initlialisé avec 
+uiSOMNumero = 0,
 uiSOMNbArcArrivant = uiSOMNbArcSortant = 0 et
 ppARCSOMArcArrivant = ppARCSOMArcSortant = nullptr) 
 *********************************************************/
@@ -14,7 +15,9 @@ CSommet::CSommet()
 {
 	// Initialisation des attributs
 	uiSOMNumero = 0;
+
 	uiSOMNbArcArrivant = uiSOMNbArcSortant = 0;
+
 	ppARCSOMArcArrivant = nullptr;
 	ppARCSOMArcSortant = nullptr;
 }
@@ -25,7 +28,7 @@ Constructeur de recopie de la classe CSommet
 Entrée: CSommet& SOMSommet : le sommet à recopier
 Nécessite: (rien)
 Sortie: (rien)
-Entraîne :	(l'objet est initlialisé avec les attributs 
+Entraîne :	(l'objet est initialisé avec les attributs 
 de SOMSommet passé en paramètre) ou
 (Exception echec_malloc levé)
 *********************************************************/
@@ -41,7 +44,7 @@ CSommet::CSommet(CSommet& SOMSommet)
 	{
 		ppARCSOMArcArrivant = nullptr;
 	}
-		/// Sinon copie des arcs
+		/// Sinon, copie des arcs
 	else
 	{
 		ppARCSOMArcArrivant = (CArc**) malloc(sizeof(CArc*) * uiSOMNbArcArrivant);
@@ -70,7 +73,7 @@ CSommet::CSommet(CSommet& SOMSommet)
 	{
 		ppARCSOMArcSortant = nullptr;
 	}
-		/// Sinon copie des arcs
+		/// Sinon, copie des arcs
 	else
 	{
 		ppARCSOMArcSortant = (CArc**) malloc(sizeof(CArc*) * uiSOMNbArcSortant);
@@ -105,6 +108,7 @@ Entraîne :	(l'objet est initlialisé avec uiSOMNumero = iNumeroSommet)
 *********************************************************/
 CSommet::CSommet(int iNumeroSommet)
 {
+
 	if (iNumeroSommet < 0)
 	{
 		CException EXCLevee;
