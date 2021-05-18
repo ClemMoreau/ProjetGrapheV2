@@ -106,7 +106,7 @@ rempli avec le contenu du fichier
 *********************************************************/
 CGraphe CFichier::FICLireFichier()
 {
-	/*
+	CGraphe GRAGraphe;
 	// Ouverture du fichier
 	ifstream fFichier(FICLireNomFichier());
 	if (!fFichier)
@@ -122,13 +122,13 @@ CGraphe CFichier::FICLireFichier()
 
 	char cNbSommet[100], cNbArc[100], cIgnore[200];
 
-	char *pcNbSommet,*pcNbArc;
+	char *pcNbSommet = NULL,*pcNbArc = NULL;
 
 	char *pcElementsuivS = NULL, *pcElementsuivA = NULL;
 
 	fFichier >> cNbSommet;
 	fFichier >> cNbArc;
-	fFichier >> cIgnore;
+	
 
 	char *pctempNbSommet = strtok_s(cNbSommet, cdelim, &pcElementsuivS);
 	char *pctempNbArc = strtok_s(cNbArc, cdelim, &pcElementsuivA);
@@ -138,19 +138,23 @@ CGraphe CFichier::FICLireFichier()
 		if (pctempNbSommet != NULL)
 		{
 			pcNbSommet = pctempNbSommet;
+			
 			pctempNbSommet = strtok_s(NULL, cdelim, &pcElementsuivS);
 		}
 		if (pctempNbArc != NULL)
 		{
 			pcNbArc = pctempNbArc;
+			
 			pctempNbArc = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
 	}
-
+	cout << "NBSommet : " << pcNbSommet << endl;
+	cout << "NbArc : " << pcNbArc << endl;
+	fFichier >> cIgnore;
 	char cSommet[100];
 	char *pctempNumeroSommet;
-	char *pcNumeroSommet;
-	char *pcElementsuivN;
+	char *pcNumeroSommet = NULL;
+	char *pcElementsuivN = NULL;
 	unsigned int uiNbSommet = atoi(pcNbSommet);
 	unsigned int uiNbArc = atoi(pcNbArc);
 	unsigned int uiNumeroSommet;
@@ -158,21 +162,65 @@ CGraphe CFichier::FICLireFichier()
 	{
 		fFichier >> cSommet;
 		
-		char *pctempNumeroSommet = strtok_s(cSommet, cdelim, &pcElementsuivN);
+		pctempNumeroSommet = strtok_s(cSommet, cdelim, &pcElementsuivN);
 
 		while (pctempNumeroSommet != NULL)
 		{
 			pcNumeroSommet = pctempNumeroSommet;
 			pctempNumeroSommet = strtok_s(NULL, cdelim, &pcElementsuivN);
 		}
+		cout << "Sommet numéro : "<<pcNumeroSommet;
 		uiNumeroSommet = atoi(pcNumeroSommet);
-		CSommet SOMSommet(uiNumeroSommet);
-	}
-	for (unsigned int uiBoucleArc = 0; uiBoucleArc < uiNbArc; ++uiBoucleArc)
-	{
+		//CSommet SOMSommet(uiNumeroSommet);
+		//GRAGraphe.GRAAjouterSommet(SOMSommet);
 
 	}
-	*/
-	CGraphe GRAGraphe;
+	fFichier >> cIgnore;
+	fFichier >> cIgnore;
+
+	char cArc[100];
+	char *pctempArcSortant;
+	char *pctempArcEntrant;
+	char *pcArcSortant = NULL;
+	char *pcArcEntrant = NULL;
+	//char *pcElementsuivA;
+	unsigned int uiArcSortant;
+	unsigned int uiArcEntrant;
+
+	char cdelim2[] = ",";
+	for (unsigned int uiBoucleArc = 0; uiBoucleArc < uiNbArc; ++uiBoucleArc)
+	{
+		fFichier >> cArc;
+		//cout << cArc << endl;
+		pctempArcSortant = strtok_s(cArc, cdelim2, &pcElementsuivA);
+		//cout << cArc << endl;
+		pctempArcSortant = strtok_s(cArc, cdelim, &pcElementsuivA);
+		//cout << cArc <<endl;
+		
+		while (pctempArcSortant != NULL)
+		{
+			pcArcSortant = pctempArcSortant;
+			pctempArcSortant = strtok_s(NULL, cdelim, &pcElementsuivA);
+		}
+		cout << "arc sortant : " << pcArcSortant << endl;
+		uiArcSortant = atoi(pcArcSortant);
+
+		fFichier >> cArc;
+		//cout << cArc << endl;
+		pctempArcEntrant = strtok_s(cArc, cdelim, &pcElementsuivA);
+
+		while (pctempArcEntrant != NULL)
+		{
+			pcArcEntrant = pctempArcEntrant;
+			pctempArcEntrant = strtok_s(NULL, cdelim, &pcElementsuivA);
+		}
+		cout << "arc entrant : " << pcArcEntrant << endl;
+		uiArcEntrant = atoi(pcArcEntrant);
+
+		//GRAGraphe.GRAAjouterArc(uiArcSortant, uiArcEntrant);
+
+	}
+	//GRAGraphe.GRAAfficherGraphe();
+	
 	return GRAGraphe;
 }

@@ -1,12 +1,15 @@
 #include <iostream>
 #include "CGraphe.h"
-
+#include "CFichier.h"
 using namespace std;
 
 int main()
 {
 	CGraphe GRAgraphe;
-	CSommet SOMSommet1(1), SOMSommet2(2), SOMSommet3(3);
+	CFichier FICfichier;
+	FICfichier.FICModifierNomFichier("C:/testLecture.txt");
+	FICfichier.FICLireFichier();
+	/*CSommet SOMSommet1(1), SOMSommet2(2), SOMSommet3(3);
 
 	GRAgraphe.GRAAjouterSommet(SOMSommet1);
 	GRAgraphe.GRAAjouterSommet(SOMSommet2);
@@ -23,8 +26,8 @@ int main()
 	GRAgraphe.GRASupprimerArc(3, 1);
 	GRAgraphe.GRAModifierArc(2, 3, 3, 2);
 
-	cout << "GRAgraphe" << endl;
-	GRAgraphe.GRAAfficherGraphe();
+	cout << "GRAgraphe" << endl;*/
+	//GRAgraphe.GRAAfficherGraphe();
 
 	return 0;
 }
