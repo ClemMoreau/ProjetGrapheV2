@@ -77,7 +77,7 @@ public:
 	/*********************************************************
 	Lecture du fichier et extraction des informations dans le fichier
 	*********************************************************/
-	CGraphe FICLireFichier();
+	CGraphe& FICLireFichier();
 };
 
 #endif //FIC
