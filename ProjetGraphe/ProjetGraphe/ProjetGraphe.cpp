@@ -8,7 +8,7 @@ int main()
 	CGraphe GRAgraphe;
 	CFichier FICfichier;
 	FICfichier.FICModifierNomFichier("C:/testLecture.txt");
-	FICfichier.FICLireFichier();
+	FICfichier.FICLireFichier().GRAAfficherGraphe();
 	/*CSommet SOMSommet1(1), SOMSommet2(2), SOMSommet3(3);
 
 	GRAgraphe.GRAAjouterSommet(SOMSommet1);

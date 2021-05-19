@@ -104,9 +104,9 @@ Sortie: CGraphe : le graphe lu dans le fichier
 Entraîne : Récupération des informations du fichier, création du graphe 
 rempli avec le contenu du fichier
 *********************************************************/
-CGraphe CFichier::FICLireFichier()
+CGraphe& CFichier::FICLireFichier()
 {
-	CGraphe GRAGraphe;
+	CGraphe* pGRAGraphe = new CGraphe();
 	// Ouverture du fichier
 	ifstream fFichier(FICLireNomFichier());
 	if (!fFichier)
@@ -148,8 +148,8 @@ CGraphe CFichier::FICLireFichier()
 			pctempNbArc = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
 	}
-	cout << "NBSommet : " << pcNbSommet << endl;
-	cout << "NbArc : " << pcNbArc << endl;
+	//cout << "NBSommet : " << pcNbSommet << endl;
+	//cout << "NbArc : " << pcNbArc << endl;
 	fFichier >> cIgnore;
 	char cSommet[100];
 	char *pctempNumeroSommet;
@@ -169,9 +169,10 @@ CGraphe CFichier::FICLireFichier()
 			pcNumeroSommet = pctempNumeroSommet;
 			pctempNumeroSommet = strtok_s(NULL, cdelim, &pcElementsuivN);
 		}
-		cout << "Sommet numéro : "<<pcNumeroSommet;
+		//cout << "Sommet numéro : "<<pcNumeroSommet;
 		uiNumeroSommet = atoi(pcNumeroSommet);
-		//CSommet SOMSommet(uiNumeroSommet);
+		CSommet *pSOMSommet = new CSommet(uiNumeroSommet);
+		pGRAGraphe->GRAAjouterSommet(*pSOMSommet);
 		//GRAGraphe.GRAAjouterSommet(SOMSommet);
 
 	}
@@ -202,7 +203,7 @@ CGraphe CFichier::FICLireFichier()
 			pcArcSortant = pctempArcSortant;
 			pctempArcSortant = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
-		cout << "arc sortant : " << pcArcSortant << endl;
+		//cout << "arc sortant : " << pcArcSortant << endl;
 		uiArcSortant = atoi(pcArcSortant);
 
 		fFichier >> cArc;
@@ -214,13 +215,14 @@ CGraphe CFichier::FICLireFichier()
 			pcArcEntrant = pctempArcEntrant;
 			pctempArcEntrant = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
-		cout << "arc entrant : " << pcArcEntrant << endl;
+		//cout << "arc entrant : " << pcArcEntrant << endl;
 		uiArcEntrant = atoi(pcArcEntrant);
 
+		pGRAGraphe->GRAAjouterArc(uiArcSortant, uiArcEntrant);
 		//GRAGraphe.GRAAjouterArc(uiArcSortant, uiArcEntrant);
 
 	}
 	//GRAGraphe.GRAAfficherGraphe();
 	
-	return GRAGraphe;
+	return *pGRAGraphe;
 }
