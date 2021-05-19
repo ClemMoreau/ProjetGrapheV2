@@ -163,17 +163,17 @@ Sortie: (rien)
 Entraîne :	(pSOMGRAListeSommet[iIndice - 1] = SOMSommet) ou
 (Exception indice_incorrecte levée)
 *********************************************************/
-void CGraphe::GRAModifierSommet(int iIndice, CSommet& SOMSommet)
+void CGraphe::GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet)
 {
-	if (iIndice < 0 || iIndice > int(uiGRANbSommet))
+	if (GRARechercheIndiceSommet(iNumeroSommet) == -1)
 	{
 		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
-		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
+		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
+		EXCLevee.EXCmodifier_message("Le sommet n'est pas dans la liste !");
 		throw(EXCLevee);
 	}
-
-	pSOMGRAListeSommet[iIndice - 1] = SOMSommet;
+	//ajouter/modifier
+	pSOMGRAListeSommet[GRARechercheIndiceSommet(iNumeroSommet)] = SOMSommet;
 }
 
 /*********************************************************
@@ -188,7 +188,7 @@ Entraîne :	(Le sommet d'indice iIndice a été supprimer) ou
 (Exception liste_vide levée)  ou
 (Exception echec_malloc levée)
 *********************************************************/
-void CGraphe::GRASupprimerSommet(int iIndice)
+void CGraphe::GRASupprimerSommet(int iNumeroSommet)
 {
 	// Si la liste est vide on lève une exception
 	if (uiGRANbSommet == 0)
@@ -199,8 +199,19 @@ void CGraphe::GRASupprimerSommet(int iIndice)
 		throw(EXCLevee);
 	}
 
+	int iIndiceSommet = GRARechercheIndiceSommet(iNumeroSommet);
+	if (iIndiceSommet == -1)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
+		EXCLevee.EXCmodifier_message("Le sommet n'est pas dans la liste !");
+		throw(EXCLevee);
+	}
+
+
 	// Si l'indice passé en paramètre n'est pas dans le tableau on lève une exception
-	if (iIndice < 0 || iIndice > int(uiGRANbSommet))
+	///useless?
+	if (iIndiceSommet < 0 || iIndiceSommet > int(uiGRANbSommet))
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
@@ -209,9 +220,9 @@ void CGraphe::GRASupprimerSommet(int iIndice)
 	}
 	
 	// On décale les sommets à partir du sommet à supprimer pour l'écraser
-	for (unsigned int uiBoucle = iIndice; uiBoucle <= uiGRANbSommet - 1; uiBoucle++)
+	for (unsigned int uiBoucle = iIndiceSommet; uiBoucle < uiGRANbSommet - 1; uiBoucle++)
 	{
-		pSOMGRAListeSommet[uiBoucle - 1] = pSOMGRAListeSommet[uiBoucle];
+		pSOMGRAListeSommet[uiBoucle] = pSOMGRAListeSommet[uiBoucle + 1];
 	}
 
 	// Si il n'y avait qu'un seul sommet on désalloue la liste
@@ -220,7 +231,7 @@ void CGraphe::GRASupprimerSommet(int iIndice)
 		free(pSOMGRAListeSommet);
 		pSOMGRAListeSommet = nullptr;
 	}
-	// Si on réalloue la liste avec la nouvelle taille
+	// Sinon on réalloue la liste avec la nouvelle taille
 	else
 	{
 		pSOMGRAListeSommet = (CSommet*)realloc(pSOMGRAListeSommet, (uiGRANbSommet - 1) * sizeof(CSommet));
@@ -256,31 +267,14 @@ Entraîne :	(deux arcs entre iNumeroSommetDepart et iNumeroSommetDestination ont 
 *********************************************************/
 void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestination)
 {
-	// Initialisation des variables locales
-	bool bTestPresenceSommetDepart = false;
-	bool bTestPresenceSommetDestination = false;
-	unsigned int uiBoucle, uiIndiceSommetDepart, uiIndiceSommetDestination;
-
-	for (uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
-	{
-		// Recherche du sommet de départ
-		if (pSOMGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDepart)
-		{
-			bTestPresenceSommetDepart = true;
-			uiIndiceSommetDepart = uiBoucle;
-		}
-
-		// Recherche du sommet de destination
-		if (pSOMGRAListeSommet[uiBoucle].SOMLireNumeroSommet() == iNumeroSommetDestination)
-		{
-			bTestPresenceSommetDestination = true;
-			uiIndiceSommetDestination = uiBoucle;
-		}
-	}
+	// Recherche du sommet de départ
+	int uiIndiceSommetDepart = GRARechercheIndiceSommet(iNumeroSommetDepart);
+	// Recherche du sommet de destination
+	int uiIndiceSommetDestination = GRARechercheIndiceSommet(iNumeroSommetDestination);
 
 	// Si le sommet de départ n'est pas dans la liste on lève une exception 
 	/// on rajoute un sommet?
-	if (bTestPresenceSommetDepart == false)
+	if (uiIndiceSommetDepart == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
@@ -290,7 +284,7 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 
 	// Si le sommet de destination n'est pas dans la liste on lève une exception 
 	/// on rajoute un sommet?
-	if (bTestPresenceSommetDestination == false)
+	if (uiIndiceSommetDestination == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
@@ -325,9 +319,7 @@ void CGraphe::GRAModifierArc(int iAncienSommetDepart, int iAncienSommetDestinati
 	try
 	{
 		GRASupprimerArc(iAncienSommetDepart, iAncienSommetDestination);
-		//GRASupprimerArc(iAncienSommetDestination, iAncienSommetDepart);
 		GRAAjouterArc(iNouveauSommetDepart, iNouveauSommetDestination);
-		//GRAAjouterArc(iAncienSommetDestination, iAncienSommetDepart);
 	}
 	catch (CException EXCLevee)
 	{
@@ -346,71 +338,33 @@ Entraîne :	()
 *********************************************************/
 void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestination)
 {
-	// Initalisation variables locales
-	bool bTestPresenceSommetDepart = false;
-	bool bTestPresenceSommetDestination = false;
-	unsigned int uiBoucleSommet, uiIndiceSommetDepart, uiIndiceSommetDestination;
+	// Recherche du sommet de départ
+	int uiIndiceSommetDepart = GRARechercheIndiceSommet(iNumeroSommetDepart);
+	// Recherche du sommet de destination
+	int uiIndiceSommetDestination = GRARechercheIndiceSommet(iNumeroSommetDestination);
 
-	for (uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet || bTestPresenceSommetDepart == false; uiBoucleSommet++)
-	{
-		// Recherche du sommet de depart
-		if (int(pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDepart)
-		{
-			bTestPresenceSommetDepart = true;
-			uiIndiceSommetDepart = uiBoucleSommet;
-		}
-
-		// Recherche du sommet de destination
-		if (int(pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet()) == iNumeroSommetDestination)
-		{
-			bTestPresenceSommetDestination = true;
-			uiIndiceSommetDestination = uiBoucleSommet;
-		}
-	}
-
-	// Si le sommet de départ n'est pas présent on lève une exception
-	if (bTestPresenceSommetDepart == false)
+	// Si le sommet de départ n'est pas dans la liste on lève une exception 
+	/// on rajoute un sommet?
+	if (uiIndiceSommetDepart == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
-		EXCLevee.EXCmodifier_message("Le sommet de départ n'est pas dans la liste !");
+		EXCLevee.EXCmodifier_message("Le sommet de départ n'a pas été trouvé dans la liste !");
 		throw EXCLevee;
 	}
 
-	// Si le sommet de destination n'est pas présent on lève une exception
-	if (bTestPresenceSommetDestination == false)
+	// Si le sommet de destination n'est pas dans la liste on lève une exception 
+	/// on rajoute un sommet?
+	if (uiIndiceSommetDestination == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
-		EXCLevee.EXCmodifier_message("Le sommet de destination n'est pas dans la liste !");
+		EXCLevee.EXCmodifier_message("Le sommet de destination n'a pas été trouvé dans la liste !");
 		throw EXCLevee;
-	}
-
-	// Initialisation des variables de recherche des arcs
-	bool bTestPresenceArcSortant = false, bTestPresenceArcArrivant = false;;
-	unsigned int uiBoucleArc, uiIndiceArcSortant, uiIndiceArcArrivant;
-
-	for (uiBoucleArc = 1; uiBoucleArc <= pSOMGRAListeSommet[uiIndiceSommetDepart].SOMLireNombreArcSortant() || bTestPresenceArcSortant == false; uiBoucleArc++)
-	{
-		// Recherche de l'arc iNumeroSommetDepart -> iNumeroSommetDestination
-		if (pSOMGRAListeSommet[uiIndiceSommetDepart].SOMLireArcSortant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDestination)
-		{
-			bTestPresenceArcSortant = true;
-			uiIndiceArcSortant = uiBoucleArc;
-		}
-	}
-	for (uiBoucleArc = 1; uiBoucleArc <= pSOMGRAListeSommet[uiIndiceSommetDestination].SOMLireNombreArcArrivant() || bTestPresenceArcArrivant == false; uiBoucleArc++)
-	{
-		// Recherche de l'arc iNumeroSommetDestination -> iNumeroSommetDepart 
-		if (pSOMGRAListeSommet[uiIndiceSommetDestination].SOMLireArcArrivant(uiBoucleArc)->ARCLireDestination() == iNumeroSommetDepart)
-		{
-			bTestPresenceArcArrivant = true;
-			uiIndiceArcArrivant = uiBoucleArc;
-		}
 	}
 
 	// Si l'arc iNumeroSommetDepart -> iNumeroSommetDestination n'est pas présent on lève une exception
-	if (bTestPresenceArcSortant == false)
+	if (pSOMGRAListeSommet[uiIndiceSommetDepart].SOMRechercheArcSortant(iNumeroSommetDestination) == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_introuvable);
@@ -419,7 +373,7 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	// Si l'arc iNumeroSommetDestination -> iNumeroSommetDepart n'est pas présent on lève une exception
-	if (bTestPresenceArcArrivant == false)
+	if (pSOMGRAListeSommet[uiIndiceSommetDestination].SOMRechercheArcArrivant(iNumeroSommetDepart) == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_introuvable);
@@ -428,14 +382,29 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	// Suppression des arcs
-	pSOMGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcSortant(uiIndiceArcSortant);
-	pSOMGRAListeSommet[uiIndiceSommetDestination].SOMSupprimerArcArrivant(uiIndiceArcArrivant);
+	pSOMGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcSortant(iNumeroSommetDestination);
+	pSOMGRAListeSommet[uiIndiceSommetDestination].SOMSupprimerArcArrivant(iNumeroSommetDepart);
 }
 
 CGraphe CGraphe::GRAInverseGraphe()
 {
 	CGraphe GRAGraphe;
 	return GRAGraphe;
+}
+
+/*********************************************************
+Recherche si le sommet est présent dans le graphe
+*********************************************************/
+int CGraphe::GRARechercheIndiceSommet(int iNumeroSommet)
+{
+	for (unsigned int uiIndiceBoucleSommet = 0; uiIndiceBoucleSommet < uiGRANbSommet; uiIndiceBoucleSommet++)
+	{
+		if (GRALireSommet(uiIndiceBoucleSommet).SOMLireNumeroSommet() == iNumeroSommet)
+		{
+			return uiIndiceBoucleSommet;
+		}
+	}
+	return -1;
 }
 
 /*********************************************************

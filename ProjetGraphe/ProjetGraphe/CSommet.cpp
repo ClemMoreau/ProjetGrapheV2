@@ -318,27 +318,29 @@ Entraîne : (l'arc à l'indice iIndice à pour nouvelle destination iDestination) o
 (Exception indice_incorrecte levée) ou
 (Exception destination_negatif levée)
 *********************************************************/
-void CSommet::SOMModifierArcArrivant(int iIndice, int iDestination)
+void CSommet::SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestination)
 {
-	// Test indice dans la liste
-	if (iIndice < 0 || iIndice > int(uiSOMNbArcArrivant))
+	// Test destination positive
+	if (0 > iNouvelleDestination)
 	{
 		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
+		EXCLevee.EXCmodifier_message("Destination negative !");
+		throw(EXCLevee);
+	}
+	
+	int iIndiceArc = SOMRechercheArcArrivant(iAncienDestination);
+	// Test indice dans la liste
+	if (iIndiceArc == -1)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
 		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
 
-	// Test destination positive
-	if (0 > iDestination)
-	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(destination_negatif);
-		EXCLevee.EXCmodifier_message("Destination negative !");
-		throw(EXCLevee);
-	}
 
-	ppARCSOMArcArrivant[iIndice - 1]->ARCModifierDestination(iDestination);
+	ppARCSOMArcArrivant[iIndiceArc - 1]->ARCModifierDestination(iNouvelleDestination);
 }
 
 /*********************************************************
@@ -352,7 +354,7 @@ Entraîne :
 (Exception indice_incorrecte levée) ou
 (Exception echec_malloc levée)
 *********************************************************/
-void CSommet::SOMSupprimerArcArrivant(int iIndice)
+void CSommet::SOMSupprimerArcArrivant(int iDestination)
 {
 	if (uiSOMNbArcArrivant == 0)
 	{
@@ -362,17 +364,18 @@ void CSommet::SOMSupprimerArcArrivant(int iIndice)
 		throw(EXCLevee);
 	}
 
+	int iIndiceArc = SOMRechercheArcArrivant(iDestination);
 	// Test indice dans tableau
-	if (iIndice < 0 || iIndice > int(uiSOMNbArcArrivant))
+	if (iIndiceArc == -1)
 	{
 		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
-		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
+		EXCLevee.EXCmodifier_message("L'arc n'est pas dans la liste !");
 		throw(EXCLevee);
 	}
 
 	//on décale le tableau
-	for (unsigned int iBoucle = iIndice - 1; iBoucle <= uiSOMNbArcArrivant - 1; iBoucle++)
+	for (unsigned int iBoucle = iIndiceArc; iBoucle <= uiSOMNbArcArrivant - 1; iBoucle++)
 	{
 		ppARCSOMArcArrivant[iBoucle] = ppARCSOMArcArrivant[iBoucle + 1];
 	}
@@ -441,19 +444,10 @@ Entraîne : (l'arc à l'indice iIndice à pour nouvelle destination iDestination) o
 (Exception indice_incorrecte levée) ou
 (Exception destination_negatif levée)
 *********************************************************/
-void CSommet::SOMModifierArcSortant(int iIndice, int iDestination)
+void CSommet::SOMModifierArcSortant(int iAncienDestination, int iNouvelleDestination)
 {
-	// Test indice dans la liste
-	if (0 > iIndice || iIndice > int(uiSOMNbArcSortant))
-	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
-		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
-		throw(EXCLevee);
-	}
-
 	// Test destination positive
-	if (0 > iDestination)
+	if (0 > iNouvelleDestination)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(destination_negatif);
@@ -461,7 +455,17 @@ void CSommet::SOMModifierArcSortant(int iIndice, int iDestination)
 		throw(EXCLevee);
 	}
 
-	ppARCSOMArcSortant[iIndice - 1]->ARCModifierDestination(iDestination);
+	int iIndiceArc = SOMRechercheArcSortant(iAncienDestination);
+	// Test indice dans la liste
+	if (iIndiceArc == -1)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
+		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
+		throw(EXCLevee);
+	}
+
+	ppARCSOMArcSortant[iIndiceArc - 1]->ARCModifierDestination(iNouvelleDestination);
 }
 
 
@@ -475,7 +479,7 @@ Entraîne :
 (l'arc à l'indice iIndice a été supprimer) et (le tableau a été réallouer) ou
 (Exception indice_incorrecte levée)
 *********************************************************/
-void CSommet::SOMSupprimerArcSortant(int iIndice)
+void CSommet::SOMSupprimerArcSortant(int iDestination)
 {
 	if (uiSOMNbArcSortant == 0)
 	{
@@ -485,17 +489,18 @@ void CSommet::SOMSupprimerArcSortant(int iIndice)
 		throw(EXCLevee);
 	}
 
-	// Test indice dans la liste
-	if (0 > iIndice || iIndice > int(uiSOMNbArcSortant))
+	int iIndiceArc = SOMRechercheArcSortant(iDestination);
+	// Test indice dans tableau
+	if (iIndiceArc == -1)
 	{
 		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
-		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
+		EXCLevee.EXCmodifier_valeur(arc_introuvable);
+		EXCLevee.EXCmodifier_message("L'arc n'est pas dans la liste !");
 		throw(EXCLevee);
 	}
 
 	//on décale le tableau
-	for (unsigned int iBoucle = iIndice; iBoucle < uiSOMNbArcSortant - 1; iBoucle++)
+	for (unsigned int iBoucle = iIndiceArc; iBoucle < uiSOMNbArcSortant - 1; iBoucle++)
 	{
 		ppARCSOMArcSortant[iBoucle] = ppARCSOMArcSortant[iBoucle + 1];
 	}
@@ -528,6 +533,36 @@ CSommet CSommet::SOMInverserArrivantPartant()
 {
 	CSommet SOMSommet;
 	return SOMSommet;
+}
+
+/*********************************************************
+	Recherche l'indice de l'arc arrivant de destination iDestination
+	*********************************************************/
+int CSommet::SOMRechercheArcArrivant(int iDestination)
+{
+	for (unsigned int uiBoucleArcArrivant = 1; uiBoucleArcArrivant <= uiSOMNbArcArrivant; uiBoucleArcArrivant++)
+	{
+		if (SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() == iDestination)
+		{
+			return uiBoucleArcArrivant + 1;
+		}
+	}
+	return -1;
+}
+
+/*********************************************************
+Recherche l'indice de l'arc sortant de destination iDestination
+*********************************************************/
+int CSommet::SOMRechercheArcSortant(int iDestination)
+{
+	for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= uiSOMNbArcSortant; uiBoucleArcSortant++)
+	{
+		if (SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() == iDestination)
+		{
+			return uiBoucleArcSortant + 1;
+		}
+	}
+	return -1;
 }
 
 /*********************************************************

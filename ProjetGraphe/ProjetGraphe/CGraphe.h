@@ -3,7 +3,7 @@
 #include "CSommet.h"
 
 #define sommet_introuvable 401
-#define arc_introuvable 402
+
 
 class CGraphe {
 
@@ -80,16 +80,16 @@ public :
 	void GRAAjouterSommet(CSommet& SOMSommet);
 
 	/*********************************************************
-	 Modifie le sommet d'indice iIndice 
+	 Modifie le sommet numero iNumeroSommet 
 	 dans la liste des sommets du graphe
 	 *********************************************************/
-	void GRAModifierSommet(int iIndice, CSommet& SOMSommet);
+	void GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet);
 
 	/*********************************************************
-	 Supprime le sommet d'indice iIndice
+	 Supprime le sommet numero iNumeroSommet
 	 dans la liste des sommets du graphe
 	 *********************************************************/
-	void GRASupprimerSommet(int iIndice);
+	void GRASupprimerSommet(int iNumeroSommet);
 
 	/*********************************************************
 	 Ajoute un arc au graphe 
@@ -115,6 +115,11 @@ public :
 	Inverse l'orientation de tous les arcs de chaque sommets du graphe
 	*********************************************************/
 	CGraphe GRAInverseGraphe();
+
+	/*********************************************************
+	Recherche si le sommet est présent dans le graphe
+	*********************************************************/
+	int GRARechercheIndiceSommet(int iNumeroSommet);
 
 	/*********************************************************
 	Affiche le graphe dans le console

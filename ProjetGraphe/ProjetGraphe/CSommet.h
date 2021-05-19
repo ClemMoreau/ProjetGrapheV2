@@ -8,6 +8,7 @@
 #define argument_null 304
 #define echec_malloc 305
 #define liste_vide 306
+#define arc_introuvable 307
 
 class CSommet {
 
@@ -111,12 +112,12 @@ public:
 	/*********************************************************
 	Modifie l'arc à l'indice iIndice dans la liste des arcs arrivants
 	*********************************************************/
-	void SOMModifierArcArrivant(int iIndice, int iDestination);
+	void SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestination);
 
 	/*********************************************************
 	Supprime l'arc à l'indice iIndice dans la liste des arcs arrivants
 	*********************************************************/
-	void SOMSupprimerArcArrivant(int iIndice);
+	void SOMSupprimerArcArrivant(int iDestination);
 
 	/*********************************************************
 	Ajoute un arc dans la liste des arcs sortants
@@ -126,12 +127,12 @@ public:
 	/*********************************************************
 	Modifie l'arc à l'indice iIndice dans la liste des arcs sortants
 	*********************************************************/
-	void SOMModifierArcSortant(int iIndice, int iDestination);
+	void SOMModifierArcSortant(int iAncienDestination, int iNouvelleDestination);
 
 	/*********************************************************
 	Supprime l'arc à l'indice iIndice dans la liste des arcs sortants
 	*********************************************************/
-	void SOMSupprimerArcSortant(int iIndice);
+	void SOMSupprimerArcSortant(int iDestination);
 
 			/************
 			 * METHODES *
@@ -141,6 +142,16 @@ public:
 	Inverse l'orientation de tous les arcs reliés au sommet
 	*********************************************************/
 	CSommet SOMInverserArrivantPartant();
+
+	/*********************************************************
+	Recherche l'indice de l'arc arrivant de destination iDestination
+	*********************************************************/
+	int SOMRechercheArcArrivant(int iDestination);
+
+	/*********************************************************
+	Recherche l'indice de l'arc sortant de destination iDestination
+	*********************************************************/
+	int SOMRechercheArcSortant(int iDestination);
 
 			/**************
 			 * SURCHARGES *

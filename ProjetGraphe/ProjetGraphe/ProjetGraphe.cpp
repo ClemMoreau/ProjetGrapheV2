@@ -5,11 +5,12 @@ using namespace std;
 
 int main()
 {
-	CGraphe GRAgraphe;
+	/*CCGraphe GRAgraphe;
 	CFichier FICfichier;
 	FICfichier.FICModifierNomFichier("C:/testLecture.txt");
-	FICfichier.FICLireFichier().GRAAfficherGraphe();
-	/*CSommet SOMSommet1(1), SOMSommet2(2), SOMSommet3(3);
+	FICfichier.FICLireFichier().GRAAfficherGraphe();*/
+	CSommet SOMSommet1(1), SOMSommet2(2), SOMSommet3(3);
+	CGraphe GRAgraphe;
 
 	GRAgraphe.GRAAjouterSommet(SOMSommet1);
 	GRAgraphe.GRAAjouterSommet(SOMSommet2);
@@ -26,8 +27,8 @@ int main()
 	GRAgraphe.GRASupprimerArc(3, 1);
 	GRAgraphe.GRAModifierArc(2, 3, 3, 2);
 
-	cout << "GRAgraphe" << endl;*/
-	//GRAgraphe.GRAAfficherGraphe();
+	cout << "GRAgraphe" << endl;
+	GRAgraphe.GRAAfficherGraphe();
 
 	return 0;
 }
