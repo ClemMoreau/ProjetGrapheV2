@@ -26,6 +26,7 @@ int main()
 
 	GRAgraphe.GRASupprimerArc(3, 1);
 	GRAgraphe.GRAModifierArc(2, 3, 3, 2);
+	GRAgraphe.GRAAjouterArc(3, 3);
 
 	cout << "GRAgraphe" << endl;
 	GRAgraphe.GRAAfficherGraphe();

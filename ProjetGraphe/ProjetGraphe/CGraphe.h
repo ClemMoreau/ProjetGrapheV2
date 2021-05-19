@@ -3,6 +3,7 @@
 #include "CSommet.h"
 
 #define sommet_introuvable 401
+#define sommet_existant 402
 
 
 class CGraphe {

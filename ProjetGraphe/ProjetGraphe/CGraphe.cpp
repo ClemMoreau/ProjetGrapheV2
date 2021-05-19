@@ -120,6 +120,7 @@ CSommet CGraphe::GRALireSommet(int iIndice)
 	return pSOMGRAListeSommet[iIndice];
 }
 
+/******************************************************************************************************************************************************************/
 //ATTENTION FAIRE GAFFE : MAYBE COMME SOMRAJOUTERARC FAUDRA METTRE DES POINTEURS SINON CA PEUT BUGUER?
 
 /*********************************************************
@@ -133,6 +134,14 @@ Entraîne :	(SOMSommet a été rajouter à la fin de la liste des sommets) ou
 *********************************************************/
 void CGraphe::GRAAjouterSommet(CSommet& SOMSommet)
 {
+	if (GRARechercheIndiceSommet(SOMSommet.SOMLireNumeroSommet()) != -1)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(sommet_existant);
+		EXCLevee.EXCmodifier_message("Le sommet est déjà présent dans la liste !");
+		throw(EXCLevee);
+	}
+
 	// Reallocation de la liste de sommet du graphe
 	pSOMGRAListeSommet = (CSommet*) realloc(pSOMGRAListeSommet, (uiGRANbSommet + 1) * sizeof(CSommet));
 	///Si l'allocation à réussi
@@ -165,7 +174,8 @@ Entraîne :	(pSOMGRAListeSommet[iIndice - 1] = SOMSommet) ou
 *********************************************************/
 void CGraphe::GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet)
 {
-	if (GRARechercheIndiceSommet(iNumeroSommet) == -1)
+	int iIndiceSommet = GRARechercheIndiceSommet(iNumeroSommet);
+	if (iIndiceSommet == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(sommet_introuvable);
@@ -173,7 +183,7 @@ void CGraphe::GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet)
 		throw(EXCLevee);
 	}
 	//ajouter/modifier
-	pSOMGRAListeSommet[GRARechercheIndiceSommet(iNumeroSommet)] = SOMSommet;
+	pSOMGRAListeSommet[iIndiceSommet] = SOMSommet;
 }
 
 /*********************************************************
@@ -208,17 +218,6 @@ void CGraphe::GRASupprimerSommet(int iNumeroSommet)
 		throw(EXCLevee);
 	}
 
-
-	// Si l'indice passé en paramètre n'est pas dans le tableau on lève une exception
-	///useless?
-	if (iIndiceSommet < 0 || iIndiceSommet > int(uiGRANbSommet))
-	{
-		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(indice_incorrecte);
-		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
-		throw(EXCLevee);
-	}
-	
 	// On décale les sommets à partir du sommet à supprimer pour l'écraser
 	for (unsigned int uiBoucle = iIndiceSommet; uiBoucle < uiGRANbSommet - 1; uiBoucle++)
 	{
@@ -292,16 +291,24 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 		throw EXCLevee;
 	}
 
-	// Ajout d'un arc partant en destination de iNumeroSometDestination
-	CArc* pARCArcPartant = new CArc(iNumeroSommetDestination);
-	pSOMGRAListeSommet[uiIndiceSommetDepart].SOMAjouterArcSortant(pARCArcPartant);
+	if (pSOMGRAListeSommet[uiIndiceSommetDepart].SOMRechercheArcSortant(iNumeroSommetDestination) == -1)
+	{
+		// Ajout d'un arc partant en destination de iNumeroSometDestination
+		CArc* pARCArcPartant = new CArc(iNumeroSommetDestination);
+		pSOMGRAListeSommet[uiIndiceSommetDepart].SOMAjouterArcSortant(pARCArcPartant);
 
-	// Ajout d'un arc arrivant en destination de iNumeroSommetDepart
-	CArc* pARCArcArrivant = new CArc(iNumeroSommetDepart);
-	pSOMGRAListeSommet[uiIndiceSommetDestination].SOMAjouterArcArrivant(pARCArcArrivant);
+		// Ajout d'un arc arrivant en destination de iNumeroSommetDepart
+		CArc* pARCArcArrivant = new CArc(iNumeroSommetDepart);
+		pSOMGRAListeSommet[uiIndiceSommetDestination].SOMAjouterArcArrivant(pARCArcArrivant);
+	}
+	else
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(sommet_existant);
+		EXCLevee.EXCmodifier_message("Le sommet est déjà présent dans la liste !");
+		throw(EXCLevee);
+	}
 }
-
-//mettre des try catchs
 
 /*********************************************************
 Modifie l'arc allant de iAncienSommetDepart à iAncienSommetDestination
@@ -422,13 +429,13 @@ void CGraphe::GRAAfficherGraphe()
 		std::cout << "*************************" << std::endl;
 		std::cout << "    Sommet numero : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet() << std::endl;
 		std::cout << "Liste arcs arrivant : " << std::endl;
-		for (unsigned int uiBoucleArcArrivant = 1; uiBoucleArcArrivant <= pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
+		for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcArrivant << std::endl;
 			std::cout << "	Destination : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << std::endl << "Liste arcs sortant : " << std::endl;
-		for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcSortant(); uiBoucleArcSortant++)
+		for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcSortant(); uiBoucleArcSortant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcSortant << std::endl;
 			std::cout << "	Destination : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;

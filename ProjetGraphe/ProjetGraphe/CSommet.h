@@ -9,6 +9,7 @@
 #define echec_malloc 305
 #define liste_vide 306
 #define arc_introuvable 307
+#define arc_existant 308
 
 class CSommet {
 

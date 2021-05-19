@@ -108,7 +108,6 @@ Entraîne :	(l'objet est initlialisé avec uiSOMNumero = iNumeroSommet)
 *********************************************************/
 CSommet::CSommet(int iNumeroSommet)
 {
-
 	if (iNumeroSommet < 0)
 	{
 		CException EXCLevee;
@@ -116,6 +115,7 @@ CSommet::CSommet(int iNumeroSommet)
 		EXCLevee.EXCmodifier_message("Numero sommet negatif !");
 		throw(EXCLevee);
 	}
+
 	uiSOMNumero = iNumeroSommet;
 	uiSOMNbArcArrivant = uiSOMNbArcSortant = 0;
 	ppARCSOMArcArrivant = nullptr;
@@ -133,11 +133,11 @@ Entraîne : (l'espace mémoire des listes des arcs est libéré)
 CSommet::~CSommet()
 {
 	uiSOMNumero = 0;
-	/*à modifier passer par suppr arc qui appel destructeur*/
+
 	if (ppARCSOMArcArrivant != nullptr)
 	{
 		unsigned int uiNbArcArrivantTempo = uiSOMNbArcArrivant;
-		for (unsigned int iBoucle = 0; iBoucle < uiNbArcArrivantTempo; iBoucle++) //vérifier fuite (tester si commencer à 1 mieux)
+		for (unsigned int iBoucle = 0; iBoucle < uiNbArcArrivantTempo; iBoucle++)
 		{
 			if (ppARCSOMArcArrivant[iBoucle] != nullptr)
 			{
@@ -148,10 +148,10 @@ CSommet::~CSommet()
 		free(ppARCSOMArcArrivant);
 	}
 
-	if (ppARCSOMArcSortant)
+	if (ppARCSOMArcSortant != nullptr)
 	{
 		unsigned int uiNbArcSortantTempo = uiSOMNbArcSortant;
-		for (unsigned int iBoucle = 0; iBoucle < uiNbArcSortantTempo; iBoucle++) //vérifier fuite (tester si commencer à 1 mieux)
+		for (unsigned int iBoucle = 0; iBoucle < uiNbArcSortantTempo; iBoucle++)
 		{
 			if (ppARCSOMArcSortant[iBoucle] != nullptr)
 			{
@@ -209,7 +209,7 @@ CArc* CSommet::SOMLireArcArrivant(int iIndice)
 		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
-	return ppARCSOMArcArrivant[iIndice - 1];
+	return ppARCSOMArcArrivant[iIndice];
 }
 
 /*********************************************************
@@ -244,7 +244,7 @@ CArc* CSommet::SOMLireArcSortant(int iIndice)
 		EXCLevee.EXCmodifier_message("Indice hors du tableau !");
 		throw(EXCLevee);
 	}
-	return ppARCSOMArcSortant[iIndice - 1];
+	return ppARCSOMArcSortant[iIndice];
 }
 
 /*********************************************************
@@ -281,6 +281,14 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMAjouterArcArrivant(CArc* pARCArc) 
 {
+	if (SOMRechercheArcArrivant(pARCArc->ARCLireDestination()) != -1)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(arc_existant);
+		EXCLevee.EXCmodifier_message("L'arc est déjà présent dans la liste !");
+		throw(EXCLevee);
+	}
+
 	// Test paramètre non null
 	if (pARCArc == nullptr)
 	{
@@ -294,7 +302,7 @@ void CSommet::SOMAjouterArcArrivant(CArc* pARCArc)
 		/// Si l'allocation à réussi ajout de l'arc en fin de liste et actualisation du nombre d'arc entrant
 	if (ppARCSOMArcArrivant != nullptr)
 	{
-		ppARCSOMArcArrivant[uiSOMNbArcArrivant] = pARCArc;	///Plus mieux de créer une copie vu que pas de pointeur? (éviter trou mémoire)
+		ppARCSOMArcArrivant[uiSOMNbArcArrivant] = new CArc(*pARCArc);
 		uiSOMNbArcArrivant++;
 	}
 		/// Sinon une exception est levé
@@ -339,8 +347,7 @@ void CSommet::SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestin
 		throw(EXCLevee);
 	}
 
-
-	ppARCSOMArcArrivant[iIndiceArc - 1]->ARCModifierDestination(iNouvelleDestination);
+	ppARCSOMArcArrivant[iIndiceArc]->ARCModifierDestination(iNouvelleDestination);
 }
 
 /*********************************************************
@@ -375,7 +382,7 @@ void CSommet::SOMSupprimerArcArrivant(int iDestination)
 	}
 
 	//on décale le tableau
-	for (unsigned int iBoucle = iIndiceArc; iBoucle <= uiSOMNbArcArrivant - 1; iBoucle++)
+	for (unsigned int iBoucle = iIndiceArc; iBoucle < uiSOMNbArcArrivant; iBoucle++)
 	{
 		ppARCSOMArcArrivant[iBoucle] = ppARCSOMArcArrivant[iBoucle + 1];
 	}
@@ -407,6 +414,14 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 {
+	if (SOMRechercheArcSortant(pARCArc->ARCLireDestination()) != -1)
+	{
+		CException EXCLevee;
+		EXCLevee.EXCmodifier_valeur(arc_existant);
+		EXCLevee.EXCmodifier_message("L'arc est déjà présent dans la liste !");
+		throw(EXCLevee);
+	}
+
 	// Test paramètre non null
 	if (pARCArc == nullptr)
 	{
@@ -465,7 +480,7 @@ void CSommet::SOMModifierArcSortant(int iAncienDestination, int iNouvelleDestina
 		throw(EXCLevee);
 	}
 
-	ppARCSOMArcSortant[iIndiceArc - 1]->ARCModifierDestination(iNouvelleDestination);
+	ppARCSOMArcSortant[iIndiceArc]->ARCModifierDestination(iNouvelleDestination);
 }
 
 
@@ -500,7 +515,7 @@ void CSommet::SOMSupprimerArcSortant(int iDestination)
 	}
 
 	//on décale le tableau
-	for (unsigned int iBoucle = iIndiceArc; iBoucle < uiSOMNbArcSortant - 1; iBoucle++)
+	for (unsigned int iBoucle = iIndiceArc; iBoucle < uiSOMNbArcSortant; iBoucle++)
 	{
 		ppARCSOMArcSortant[iBoucle] = ppARCSOMArcSortant[iBoucle + 1];
 	}
@@ -540,11 +555,11 @@ CSommet CSommet::SOMInverserArrivantPartant()
 	*********************************************************/
 int CSommet::SOMRechercheArcArrivant(int iDestination)
 {
-	for (unsigned int uiBoucleArcArrivant = 1; uiBoucleArcArrivant <= uiSOMNbArcArrivant; uiBoucleArcArrivant++)
+	for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < uiSOMNbArcArrivant; uiBoucleArcArrivant++)
 	{
-		if (SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() == iDestination)
+		if (ppARCSOMArcArrivant[uiBoucleArcArrivant]->ARCLireDestination() == iDestination)
 		{
-			return uiBoucleArcArrivant + 1;
+			return uiBoucleArcArrivant;
 		}
 	}
 	return -1;
@@ -555,11 +570,11 @@ Recherche l'indice de l'arc sortant de destination iDestination
 *********************************************************/
 int CSommet::SOMRechercheArcSortant(int iDestination)
 {
-	for (unsigned int uiBoucleArcSortant = 1; uiBoucleArcSortant <= uiSOMNbArcSortant; uiBoucleArcSortant++)
+	for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < uiSOMNbArcSortant; uiBoucleArcSortant++)
 	{
-		if (SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() == iDestination)
+		if (ppARCSOMArcSortant[uiBoucleArcSortant]->ARCLireDestination() == iDestination)
 		{
-			return uiBoucleArcSortant + 1;
+			return uiBoucleArcSortant;
 		}
 	}
 	return -1;
