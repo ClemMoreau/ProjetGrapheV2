@@ -117,16 +117,16 @@ public :
 	*********************************************************/
 	CGraphe GRAInverseGraphe();
 
-	/*********************************************************
-	Recherche si le sommet est présent dans le graphe
-	*********************************************************/
-	int GRARechercheIndiceSommet(int iNumeroSommet);
 
 	/*********************************************************
 	Affiche le graphe dans le console
 	*********************************************************/
 	void GRAAfficherGraphe();
 
+	/*********************************************************
+	Recherche si le sommet est présent dans le graphe
+	*********************************************************/
+	int GRARechercheIndiceSommet(int iNumeroSommet);
 					/**************
 					 * SURCHARGES *
 					 **************/

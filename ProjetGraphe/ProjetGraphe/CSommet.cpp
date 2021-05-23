@@ -281,7 +281,7 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMAjouterArcArrivant(CArc* pARCArc) 
 {
-	if (SOMRechercheArcArrivant(pARCArc->ARCLireDestination()) != -1)
+	if (SOMRechercheIndiceArcArrivant(pARCArc->ARCLireDestination()) != -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_existant);
@@ -337,7 +337,7 @@ void CSommet::SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestin
 		throw(EXCLevee);
 	}
 	
-	int iIndiceArc = SOMRechercheArcArrivant(iAncienDestination);
+	int iIndiceArc = SOMRechercheIndiceArcArrivant(iAncienDestination);
 	// Test indice dans la liste
 	if (iIndiceArc == -1)
 	{
@@ -371,7 +371,7 @@ void CSommet::SOMSupprimerArcArrivant(int iDestination)
 		throw(EXCLevee);
 	}
 
-	int iIndiceArc = SOMRechercheArcArrivant(iDestination);
+	int iIndiceArc = SOMRechercheIndiceArcArrivant(iDestination);
 	// Test indice dans tableau
 	if (iIndiceArc == -1)
 	{
@@ -414,7 +414,7 @@ Entraîne :
 *********************************************************/
 void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 {
-	if (SOMRechercheArcSortant(pARCArc->ARCLireDestination()) != -1)
+	if (SOMRechercheIndiceArcSortant(pARCArc->ARCLireDestination()) != -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_existant);
@@ -470,7 +470,7 @@ void CSommet::SOMModifierArcSortant(int iAncienDestination, int iNouvelleDestina
 		throw(EXCLevee);
 	}
 
-	int iIndiceArc = SOMRechercheArcSortant(iAncienDestination);
+	int iIndiceArc = SOMRechercheIndiceArcSortant(iAncienDestination);
 	// Test indice dans la liste
 	if (iIndiceArc == -1)
 	{
@@ -504,7 +504,7 @@ void CSommet::SOMSupprimerArcSortant(int iDestination)
 		throw(EXCLevee);
 	}
 
-	int iIndiceArc = SOMRechercheArcSortant(iDestination);
+	int iIndiceArc = SOMRechercheIndiceArcSortant(iDestination);
 	// Test indice dans tableau
 	if (iIndiceArc == -1)
 	{
@@ -553,7 +553,7 @@ CSommet CSommet::SOMInverserArrivantPartant()
 /*********************************************************
 	Recherche l'indice de l'arc arrivant de destination iDestination
 	*********************************************************/
-int CSommet::SOMRechercheArcArrivant(int iDestination)
+int CSommet::SOMRechercheIndiceArcArrivant(int iDestination)
 {
 	for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < uiSOMNbArcArrivant; uiBoucleArcArrivant++)
 	{
@@ -568,7 +568,7 @@ int CSommet::SOMRechercheArcArrivant(int iDestination)
 /*********************************************************
 Recherche l'indice de l'arc sortant de destination iDestination
 *********************************************************/
-int CSommet::SOMRechercheArcSortant(int iDestination)
+int CSommet::SOMRechercheIndiceArcSortant(int iDestination)
 {
 	for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < uiSOMNbArcSortant; uiBoucleArcSortant++)
 	{

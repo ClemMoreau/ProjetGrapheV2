@@ -147,12 +147,12 @@ public:
 	/*********************************************************
 	Recherche l'indice de l'arc arrivant de destination iDestination
 	*********************************************************/
-	int SOMRechercheArcArrivant(int iDestination);
+	int SOMRechercheIndiceArcArrivant(int iDestination);
 
 	/*********************************************************
 	Recherche l'indice de l'arc sortant de destination iDestination
 	*********************************************************/
-	int SOMRechercheArcSortant(int iDestination);
+	int SOMRechercheIndiceArcSortant(int iDestination);
 
 			/**************
 			 * SURCHARGES *
