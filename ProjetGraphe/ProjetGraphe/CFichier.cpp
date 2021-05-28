@@ -126,6 +126,7 @@ CGraphe& CFichier::FICLireFichier()
 
 	char *pcElementsuivS = NULL, *pcElementsuivA = NULL;
 
+	//Récupération des 2 première lignes du fichier
 	fFichier >> cNbSommet;
 	fFichier >> cNbArc;
 	
@@ -133,6 +134,7 @@ CGraphe& CFichier::FICLireFichier()
 	char *pctempNbSommet = strtok_s(cNbSommet, cdelim, &pcElementsuivS);
 	char *pctempNbArc = strtok_s(cNbArc, cdelim, &pcElementsuivA);
 
+	//on parcours ces lignes pour récupérer le nombre de sommet et d'arc
 	while (pctempNbSommet != NULL)
 	{
 		if (pctempNbSommet != NULL)
@@ -148,16 +150,27 @@ CGraphe& CFichier::FICLireFichier()
 			pctempNbArc = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
 	}
-	//cout << "NBSommet : " << pcNbSommet << endl;
-	//cout << "NbArc : " << pcNbArc << endl;
+	
+	//On ingore cette ligne du fichier
 	fFichier >> cIgnore;
+
 	char cSommet[100];
 	char *pctempNumeroSommet;
 	char *pcNumeroSommet = NULL;
 	char *pcElementsuivN = NULL;
+
+	//Conversion en unsigned int pour les itérations de la boucle 
 	unsigned int uiNbSommet = atoi(pcNbSommet);
 	unsigned int uiNbArc = atoi(pcNbArc);
+	
 	unsigned int uiNumeroSommet;
+	/*
+	 Dans cette boucle, on parcours les lignes contenant les sommet
+	 Sépararation des chaînes de caractère au niveau du "="
+	 Convertion en int du numéro du sommet
+	 Création d'un nouveau sommet
+	 Ajout au graphe
+	*/
 	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiNbSommet; ++uiBoucleSommet)
 	{
 		fFichier >> cSommet;
@@ -169,45 +182,54 @@ CGraphe& CFichier::FICLireFichier()
 			pcNumeroSommet = pctempNumeroSommet;
 			pctempNumeroSommet = strtok_s(NULL, cdelim, &pcElementsuivN);
 		}
-		//cout << "Sommet numéro : "<<pcNumeroSommet;
+
 		uiNumeroSommet = atoi(pcNumeroSommet);
 		CSommet *pSOMSommet = new CSommet(uiNumeroSommet);
 		pGRAGraphe->GRAAjouterSommet(*pSOMSommet);
-		//GRAGraphe.GRAAjouterSommet(SOMSommet);
-
 	}
 	fFichier >> cIgnore;
 	fFichier >> cIgnore;
 
+	//initilaisation des variables pour la boucle récupérant les données sur les arcs
 	char cArc[100];
 	char *pctempArcSortant;
 	char *pctempArcEntrant;
 	char *pcArcSortant = NULL;
 	char *pcArcEntrant = NULL;
-	//char *pcElementsuivA;
 	unsigned int uiArcSortant;
 	unsigned int uiArcEntrant;
 
+	//création du délimiteur ","
 	char cdelim2[] = ",";
+
+	/*
+	Dans cette boucle,
+	Le flux >> sépare au niveau des espace, donc on récupère "Debut=?,"
+	Séparation au niveau de la virgule puis au niveau du "="
+	Convertion en int de la valeur de l'arc sortant
+	Récupération du reste de la ligne
+	Séparation au niveau du "="
+	Convertion en int de la valeur de l'arc entrant
+	Utilisation de la fonction GRAAjouterArc(uiArcSortant, uiArcEntrant) qui 
+	créé des arcs et les ajoute au graphe
+	*/
 	for (unsigned int uiBoucleArc = 0; uiBoucleArc < uiNbArc; ++uiBoucleArc)
 	{
 		fFichier >> cArc;
-		//cout << cArc << endl;
+
 		pctempArcSortant = strtok_s(cArc, cdelim2, &pcElementsuivA);
-		//cout << cArc << endl;
 		pctempArcSortant = strtok_s(cArc, cdelim, &pcElementsuivA);
-		//cout << cArc <<endl;
 		
 		while (pctempArcSortant != NULL)
 		{
 			pcArcSortant = pctempArcSortant;
 			pctempArcSortant = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
-		//cout << "arc sortant : " << pcArcSortant << endl;
+		
 		uiArcSortant = atoi(pcArcSortant);
 
 		fFichier >> cArc;
-		//cout << cArc << endl;
+		
 		pctempArcEntrant = strtok_s(cArc, cdelim, &pcElementsuivA);
 
 		while (pctempArcEntrant != NULL)
@@ -215,14 +237,10 @@ CGraphe& CFichier::FICLireFichier()
 			pcArcEntrant = pctempArcEntrant;
 			pctempArcEntrant = strtok_s(NULL, cdelim, &pcElementsuivA);
 		}
-		//cout << "arc entrant : " << pcArcEntrant << endl;
+		
 		uiArcEntrant = atoi(pcArcEntrant);
 
 		pGRAGraphe->GRAAjouterArc(uiArcSortant, uiArcEntrant);
-		//GRAGraphe.GRAAjouterArc(uiArcSortant, uiArcEntrant);
-
 	}
-	//GRAGraphe.GRAAfficherGraphe();
-	
 	return *pGRAGraphe;
 }
