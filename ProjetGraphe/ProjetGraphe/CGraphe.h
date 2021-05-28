@@ -17,7 +17,7 @@ private:
 	unsigned int uiGRANbSommet;
 
 	/*Liste des sommets du graphe*/
-	CSommet* pSOMGRAListeSommet;
+	CSommet** ppSOMGRAListeSommet;
 
 public :
 
@@ -63,13 +63,13 @@ public :
 	/*********************************************************
 	 Retourne la liste des sommets du graphe
 	 *********************************************************/
-	CSommet* GRALireListeSommet(); ///surêment a retirer
+	CSommet** GRALireListeSommet(); 
 
 	/*********************************************************
 	 Retourne le sommet d'indice iIndice 
 	 dans la liste des sommets du graphe
 	 *********************************************************/
-	CSommet GRALireSommet(int iIndice);
+	CSommet& GRALireSommet(int iIndice);
 
 			/***********
 			 * SETTERS *
@@ -115,7 +115,7 @@ public :
 	/*********************************************************
 	Inverse l'orientation de tous les arcs de chaque sommets du graphe
 	*********************************************************/
-	CGraphe GRAInverseGraphe();
+	CGraphe& GRAInverseGraphe();
 
 
 	/*********************************************************

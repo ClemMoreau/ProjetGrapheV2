@@ -544,10 +544,21 @@ Entraîne :
 (les arcs arrivant et sortant sont inversé) ou
 (Exception indice_incorrecte levée)
 *********************************************************/
-CSommet CSommet::SOMInverserArrivantPartant()
+CSommet& CSommet::SOMInverserArrivantPartant()
 {
-	CSommet SOMSommet;
-	return SOMSommet;
+	CSommet* pSOMSommet = new CSommet(uiSOMNumero);
+
+	for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < uiSOMNbArcArrivant; uiBoucleArcArrivant++)
+	{
+		pSOMSommet->SOMAjouterArcArrivant(SOMLireArcSortant(uiBoucleArcArrivant));
+	}
+
+	for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < uiSOMNbArcSortant; uiBoucleArcSortant++)
+	{
+		pSOMSommet->SOMAjouterArcSortant(SOMLireArcArrivant(uiBoucleArcSortant));
+	}
+
+	return *pSOMSommet;
 }
 
 /*********************************************************

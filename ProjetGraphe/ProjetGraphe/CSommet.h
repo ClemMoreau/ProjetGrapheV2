@@ -142,7 +142,7 @@ public:
 	/*********************************************************
 	Inverse l'orientation de tous les arcs reliés au sommet
 	*********************************************************/
-	CSommet SOMInverserArrivantPartant();
+	CSommet& SOMInverserArrivantPartant();
 
 	/*********************************************************
 	Recherche l'indice de l'arc arrivant de destination iDestination

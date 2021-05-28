@@ -13,7 +13,7 @@ CGraphe::CGraphe()
 {
 	// Initialisation des attributs
 	uiGRANbSommet = 0;
-	pSOMGRAListeSommet = nullptr;
+	ppSOMGRAListeSommet = nullptr;
 }
 
 /*********************************************************
@@ -33,12 +33,13 @@ CGraphe::CGraphe(CGraphe& GRAGraphe)
 	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
 
 	// Allocation en mémoire de la lsite de sommet
-	pSOMGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
+	ppSOMGRAListeSommet = (CSommet**)malloc(uiGRANbSommet * sizeof(CSommet*));
 
 	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
 		// Copie des sommets 
-		pSOMGRAListeSommet[uiGRANbSommet] = GRAGraphe.pSOMGRAListeSommet[uiGRANbSommet];
+		//ppSOMGRAListeSommet[uiGRANbSommet] = new CSommet(*GRAGraphe.ppSOMGRAListeSommet[uiBoucle]);
+		GRAAjouterSommet(*GRAGraphe.ppSOMGRAListeSommet[uiBoucle]);
 	}
 }
 
@@ -59,7 +60,7 @@ CGraphe::CGraphe(int iNombreSommet)
 	uiGRANbSommet = iNombreSommet;
 
 	// Allocation en mémoire de la liste de sommet
-	pSOMGRAListeSommet = (CSommet*)malloc(uiGRANbSommet * sizeof(CSommet));
+	ppSOMGRAListeSommet = (CSommet**)malloc(uiGRANbSommet * sizeof(CSommet*));
 }///peut être à suppr
 
 CGraphe::~CGraphe()
@@ -68,7 +69,7 @@ CGraphe::~CGraphe()
 	uiGRANbSommet = 0;
 
 	// Libération de la liste de sommet
-	free(pSOMGRAListeSommet);
+	free(ppSOMGRAListeSommet);
 }
 
 /*********************************************************
@@ -92,9 +93,9 @@ Nécessite:	(rien)
 Sortie: CSommet* : la liste des sommets du graphe
 Entraîne :	(rien)
 *********************************************************/
-CSommet* CGraphe::GRALireListeSommet()
+CSommet** CGraphe::GRALireListeSommet()
 {
-	return pSOMGRAListeSommet;
+	return ppSOMGRAListeSommet;
 }
 
 /*********************************************************
@@ -106,7 +107,7 @@ Nécessite:	(rien)
 Sortie: CSommet : le sommet d'indice iIndice
 Entraîne :	(rien)
 *********************************************************/
-CSommet CGraphe::GRALireSommet(int iIndice)
+CSommet& CGraphe::GRALireSommet(int iIndice)
 {
 	// Vérification de l'indice en paramètre
 	if (iIndice < 0 || iIndice > int(uiGRANbSommet))
@@ -117,7 +118,7 @@ CSommet CGraphe::GRALireSommet(int iIndice)
 		throw(EXCLevee);
 	}
 
-	return pSOMGRAListeSommet[iIndice];
+	return *ppSOMGRAListeSommet[iIndice];
 }
 
 /******************************************************************************************************************************************************************/
@@ -143,12 +144,12 @@ void CGraphe::GRAAjouterSommet(CSommet& SOMSommet)
 	}
 
 	// Reallocation de la liste de sommet du graphe
-	pSOMGRAListeSommet = (CSommet*) realloc(pSOMGRAListeSommet, (uiGRANbSommet + 1) * sizeof(CSommet));
+	ppSOMGRAListeSommet = (CSommet**) realloc(ppSOMGRAListeSommet, (uiGRANbSommet + 1) * sizeof(CSommet*));
 	///Si l'allocation à réussi
-	if (pSOMGRAListeSommet != nullptr)
+	if (ppSOMGRAListeSommet != nullptr)
 	{
 		// Ajout du sommet dans la liste et mise à jour du nombre de sommet du graphe
-		pSOMGRAListeSommet[uiGRANbSommet] = SOMSommet;
+		ppSOMGRAListeSommet[uiGRANbSommet] = new CSommet(SOMSommet);
 		uiGRANbSommet++;
 	}
 	///Sinon on lève une exception
@@ -183,7 +184,7 @@ void CGraphe::GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet)
 		throw(EXCLevee);
 	}
 	//ajouter/modifier
-	pSOMGRAListeSommet[iIndiceSommet] = SOMSommet;
+	ppSOMGRAListeSommet[iIndiceSommet] = new CSommet(SOMSommet);
 }
 
 /*********************************************************
@@ -221,21 +222,21 @@ void CGraphe::GRASupprimerSommet(int iNumeroSommet)
 	// On décale les sommets à partir du sommet à supprimer pour l'écraser
 	for (unsigned int uiBoucle = iIndiceSommet; uiBoucle < uiGRANbSommet - 1; uiBoucle++)
 	{
-		pSOMGRAListeSommet[uiBoucle] = pSOMGRAListeSommet[uiBoucle + 1];
+		ppSOMGRAListeSommet[uiBoucle] = ppSOMGRAListeSommet[uiBoucle + 1];
 	}
 
 	// Si il n'y avait qu'un seul sommet on désalloue la liste
 	if (uiGRANbSommet - 1 == 0)
 	{
-		free(pSOMGRAListeSommet);
-		pSOMGRAListeSommet = nullptr;
+		free(ppSOMGRAListeSommet);
+		ppSOMGRAListeSommet = nullptr;
 	}
 	// Sinon on réalloue la liste avec la nouvelle taille
 	else
 	{
-		pSOMGRAListeSommet = (CSommet*)realloc(pSOMGRAListeSommet, (uiGRANbSommet - 1) * sizeof(CSommet));
+		ppSOMGRAListeSommet = (CSommet**)realloc(ppSOMGRAListeSommet, (uiGRANbSommet - 1) * sizeof(CSommet*));
 		// Si l'allocation à réussi on met à jour le nombre de sommet
-		if (pSOMGRAListeSommet != nullptr)
+		if (ppSOMGRAListeSommet != nullptr)
 		{
 			uiGRANbSommet--;
 		}
@@ -291,15 +292,15 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 		throw EXCLevee;
 	}
 
-	if (pSOMGRAListeSommet[uiIndiceSommetDepart].SOMRechercheArcSortant(iNumeroSommetDestination) == -1)
+	if (ppSOMGRAListeSommet[uiIndiceSommetDepart]->SOMRechercheIndiceArcSortant(iNumeroSommetDestination) == -1)
 	{
 		// Ajout d'un arc partant en destination de iNumeroSometDestination
 		CArc* pARCArcPartant = new CArc(iNumeroSommetDestination);
-		pSOMGRAListeSommet[uiIndiceSommetDepart].SOMAjouterArcSortant(pARCArcPartant);
+		ppSOMGRAListeSommet[uiIndiceSommetDepart]->SOMAjouterArcSortant(pARCArcPartant);
 
 		// Ajout d'un arc arrivant en destination de iNumeroSommetDepart
 		CArc* pARCArcArrivant = new CArc(iNumeroSommetDepart);
-		pSOMGRAListeSommet[uiIndiceSommetDestination].SOMAjouterArcArrivant(pARCArcArrivant);
+		ppSOMGRAListeSommet[uiIndiceSommetDestination]->SOMAjouterArcArrivant(pARCArcArrivant);
 	}
 	else
 	{
@@ -371,7 +372,7 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	// Si l'arc iNumeroSommetDepart -> iNumeroSommetDestination n'est pas présent on lève une exception
-	if (pSOMGRAListeSommet[uiIndiceSommetDepart].SOMRechercheArcSortant(iNumeroSommetDestination) == -1)
+	if (ppSOMGRAListeSommet[uiIndiceSommetDepart]->SOMRechercheIndiceArcSortant(iNumeroSommetDestination) == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_introuvable);
@@ -380,7 +381,7 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	// Si l'arc iNumeroSommetDestination -> iNumeroSommetDepart n'est pas présent on lève une exception
-	if (pSOMGRAListeSommet[uiIndiceSommetDestination].SOMRechercheArcArrivant(iNumeroSommetDepart) == -1)
+	if (ppSOMGRAListeSommet[uiIndiceSommetDestination]->SOMRechercheIndiceArcArrivant(iNumeroSommetDepart) == -1)
 	{
 		CException EXCLevee;
 		EXCLevee.EXCmodifier_valeur(arc_introuvable);
@@ -389,14 +390,20 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	// Suppression des arcs
-	pSOMGRAListeSommet[uiIndiceSommetDepart].SOMSupprimerArcSortant(iNumeroSommetDestination);
-	pSOMGRAListeSommet[uiIndiceSommetDestination].SOMSupprimerArcArrivant(iNumeroSommetDepart);
+	ppSOMGRAListeSommet[uiIndiceSommetDepart]->SOMSupprimerArcSortant(iNumeroSommetDestination);
+	ppSOMGRAListeSommet[uiIndiceSommetDestination]->SOMSupprimerArcArrivant(iNumeroSommetDepart);
 }
 
-CGraphe CGraphe::GRAInverseGraphe()
+CGraphe& CGraphe::GRAInverseGraphe()
 {
-	CGraphe GRAGraphe;
-	return GRAGraphe;
+	CGraphe* pGRAGraphe = new CGraphe();
+
+	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet; uiBoucleSommet++)
+	{
+		pGRAGraphe->GRAAjouterSommet(ppSOMGRAListeSommet[uiBoucleSommet]->SOMInverserArrivantPartant());
+	}
+
+	return *pGRAGraphe;
 }
 
 /*********************************************************
@@ -427,18 +434,18 @@ void CGraphe::GRAAfficherGraphe()
 	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet; uiBoucleSommet++)
 	{
 		std::cout << "*************************" << std::endl;
-		std::cout << "    Sommet numero : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireNumeroSommet() << std::endl;
+		std::cout << "    Sommet numero : " << ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireNumeroSommet() << std::endl;
 		std::cout << "Liste arcs arrivant : " << std::endl;
-		for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
+		for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcArrivant << std::endl;
-			std::cout << "	Destination : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
+			std::cout << "	Destination : " << ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << std::endl << "Liste arcs sortant : " << std::endl;
-		for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < pSOMGRAListeSommet[uiBoucleSommet].SOMLireNombreArcSortant(); uiBoucleArcSortant++)
+		for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireNombreArcSortant(); uiBoucleArcSortant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcSortant << std::endl;
-			std::cout << "	Destination : " << pSOMGRAListeSommet[uiBoucleSommet].SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
+			std::cout << "	Destination : " << ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireArcSortant(uiBoucleArcSortant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << "*************************" << std::endl << std::endl;
 	}
@@ -449,13 +456,16 @@ Surcharge de l'opérateur d'affectation pour la classe CGraphe
 *********************************************************/
 CGraphe& CGraphe::operator=(CGraphe& GRAGraphe)
 {
+	// Recopie du nombre de sommet
 	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
 
-	pSOMGRAListeSommet = new CSommet[uiGRANbSommet];
+	// Allocation en mémoire de la lsite de sommet
+	ppSOMGRAListeSommet = (CSommet**)malloc(uiGRANbSommet * sizeof(CSommet*));
 
 	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
 	{
-		pSOMGRAListeSommet[uiGRANbSommet] = GRAGraphe.pSOMGRAListeSommet[uiGRANbSommet];
+		// Copie des sommets 
+		ppSOMGRAListeSommet[uiGRANbSommet] = new CSommet(*GRAGraphe.GRALireListeSommet()[uiBoucle]);
 	}
 
 	return *this;
