@@ -21,13 +21,13 @@ private:
 	/*Numero du sommet*/
 	unsigned int uiSOMNumero;
 
-	/*Nombre d'arrivant au sommet*/
+	/*Nombre d'arcs arrivant au sommet*/
 	unsigned int uiSOMNbArcArrivant;
 
 	/*Liste des arcs arrivant au sommet*/
 	CArc** ppARCSOMArcArrivant;
 
-	/*Nombre sortant du sommet*/
+	/*Nombre d'arc sortant du sommet*/
 	unsigned int uiSOMNbArcSortant;
 
 	/*Liste des arcs sortant au sommet*/
@@ -52,7 +52,7 @@ public:
 
 	/*********************************************************
 	Constructeur de recopie de la classe CSommet
-	prenant en paramètre un CSommet
+	prenant en paramètre un entier
 	*********************************************************/
 	CSommet(int iNumeroSommet);
 
@@ -75,7 +75,7 @@ public:
 	unsigned int SOMLireNumeroSommet();
 
 	/*********************************************************
-	Retourne le nombre d'arc arrivant du sommet
+	Retourne le nombre d'arc arrivant au sommet
 	*********************************************************/
 	unsigned int SOMLireNombreArcArrivant();
 
@@ -111,7 +111,8 @@ public:
 	void SOMAjouterArcArrivant(CArc* pARCArc);
 
 	/*********************************************************
-	Modifie l'arc à l'indice iIndice dans la liste des arcs arrivants
+	Modifie l'arc ayant pour destination iAncienDestination par 
+	iNouvelleDestination dans la liste des arcs arrivants
 	*********************************************************/
 	void SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestination);
 

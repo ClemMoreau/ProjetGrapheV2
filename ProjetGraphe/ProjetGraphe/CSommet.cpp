@@ -197,7 +197,7 @@ du tableau des arcs arrivants
 Entrée: int iIndice : l'indice de l'arc à retourner
 Nécessite: (rien) 
 Sortie: CArc* : l'arc à l'indice iIndice de la liste des arcs arrivants
-Entraîne : (CArcs* en sortie) ou (Exception indice_incorrecte levée)
+Entraîne : (CArc* en sortie) ou (Exception indice_incorrecte levée)
 *********************************************************/
 CArc* CSommet::SOMLireArcArrivant(int iIndice)
 {
@@ -232,7 +232,7 @@ du tableau des arcs sortants
 Entrée: int iIndice : l'indice de l'arc à retourner
 Nécessite: (rien)
 Sortie: CArc* : l'arc à l'indice iIndice de la liste des arcs sortants
-Entraîne : (CArcs* en sortie) ou (Exception indice_incorrecte levée)
+Entraîne : (CArc* en sortie) ou (Exception indice_incorrecte levée)
 *********************************************************/
 CArc* CSommet::SOMLireArcSortant(int iIndice)
 {
@@ -277,10 +277,12 @@ Sortie: (rien)
 Entraîne : 
 (pARCArc à été ajouter en fin de la liste) et (le tableau a été réallouer) ou
 (Exception argument_null levée) ou 
-(Exception echec_malloc levée)
+(Exception echec_malloc levée) ou 
+(Exception arc_existant levée)
 *********************************************************/
 void CSommet::SOMAjouterArcArrivant(CArc* pARCArc) 
 {
+	//On vérifie que l'arc ne soit pas déjà dans la liste
 	if (SOMRechercheIndiceArcArrivant(pARCArc->ARCLireDestination()) != -1)
 	{
 		CException EXCLevee;
@@ -316,15 +318,16 @@ void CSommet::SOMAjouterArcArrivant(CArc* pARCArc)
 }
 
 /*********************************************************
-Modifie l'arc à l'indice iIndice dans la liste des arcs arrivants
+Modifie l'arc ayant pour destination iAncienDestination par
+iNouvelleDestination dans la liste des arcs arrivants
 *********************************************************
-Entrée: int iIndice : l'indice de l'arc à modifier
-	    int iDestination : la nouvelle destination de cet arc
+Entrée: int iAncienDestination : l'ancienne destination de l'arc
+	    int iNouvelleDestination : la nouvelle destination de cet arc
 Nécessite: (rien)
 Sortie: (rien)
-Entraîne : (l'arc à l'indice iIndice à pour nouvelle destination iDestination) ou
-(Exception indice_incorrecte levée) ou
-(Exception destination_negatif levée)
+Entraîne : (l'arc ayant pour destination iAncienDestination a maintenant
+iNouvelleDestination en destination) ou
+(Exception arc_introuvable levée)
 *********************************************************/
 void CSommet::SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestination)
 {
@@ -351,15 +354,17 @@ void CSommet::SOMModifierArcArrivant(int iAncienDestination, int iNouvelleDestin
 }
 
 /*********************************************************
-Supprime l'arc à l'indice iIndice dans la liste des arcs arrivants
+Supprime l'arc ayant pour destination iDestination
+dans la liste des arcs arrivants
 *********************************************************
-Entrée: int iIndice : l'indice de l'arc à supprimer
+Entrée: int iDestination : la destination de l'arc à supprimer
 Nécessite: (rien)
 Sortie: (rien)
 Entraîne : 
-(l'arc à l'indice iIndice a été supprimer) et (le tableau a été réallouer) ou
-(Exception indice_incorrecte levée) ou
-(Exception echec_malloc levée)
+(l'arc de destination iDestination a été supprimer) et (le tableau a été réallouer) ou
+(Exception liste_vide levée) ou
+(Exception echec_malloc levée)ou
+(Exception liste_vide levée)
 *********************************************************/
 void CSommet::SOMSupprimerArcArrivant(int iDestination)
 {
@@ -397,6 +402,7 @@ void CSommet::SOMSupprimerArcArrivant(int iDestination)
 	}
 	else
 	{
+		//On met à jour le nombre d'arc
 		uiSOMNbArcArrivant--;
 	}
 }
@@ -410,7 +416,8 @@ Sortie: (rien)
 Entraîne :
 (pARCArc à été ajouter en fin de la liste) et (le tableau a été réallouer) ou
 (Exception argument_null levée) ou
-(Exception echec_malloc levée)
+(Exception echec_malloc levée) ou
+(Exception arc_existant levée)
 *********************************************************/
 void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 {
@@ -435,7 +442,7 @@ void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 		/// Si l'allocation à réussi on rajoute l'arc
 	if (ppARCSOMArcSortant != nullptr)
 	{
-		ppARCSOMArcSortant[uiSOMNbArcSortant] = pARCArc;	///Plus mieux de créer une copie vu que pas de pointeur? (éviter trou mémoire)
+		ppARCSOMArcSortant[uiSOMNbArcSortant] = pARCArc;
 		uiSOMNbArcSortant++;
 	}
 		/// Sinon une exception est levé
@@ -449,15 +456,16 @@ void CSommet::SOMAjouterArcSortant(CArc* pARCArc)
 }
 
 /*********************************************************
-Modifie l'arc à l'indice iIndice dans la liste des arcs sortants
+Modifie l'arc ayant pour destination iAncienDestination par
+iNouvelleDestination dans la liste des arcs sortants
 *********************************************************
-Entrée: int iIndice : l'indice de l'arc à modifier
-		int iDestination : la nouvelle destination de cet arc
+Entrée: int iAncienDestination : l'ancienne destination de l'arc
+		int iNouvelleDestination : la nouvelle destination de cet arc
 Nécessite: (rien)
 Sortie: (rien)
-Entraîne : (l'arc à l'indice iIndice à pour nouvelle destination iDestination) ou
-(Exception indice_incorrecte levée) ou
-(Exception destination_negatif levée)
+Entraîne : (l'arc ayant pour destination iAncienDestination a maintenant
+iNouvelleDestination en destination) ou
+(Exception arc_introuvable levée)
 *********************************************************/
 void CSommet::SOMModifierArcSortant(int iAncienDestination, int iNouvelleDestination)
 {
@@ -480,19 +488,23 @@ void CSommet::SOMModifierArcSortant(int iAncienDestination, int iNouvelleDestina
 		throw(EXCLevee);
 	}
 
+	//On modifie la destination de l'arc
 	ppARCSOMArcSortant[iIndiceArc]->ARCModifierDestination(iNouvelleDestination);
 }
 
 
 /*********************************************************
-Supprime l'arc à l'indice iIndice dans la liste des arcs sortants
+Supprime l'arc ayant pour destination iDestination
+dans la liste des arcs sortants
 *********************************************************
-Entrée: int iIndice : l'indice de l'arc à supprimer
+Entrée: int iDestination : la destination de l'arc à supprimer
 Nécessite: (rien)
 Sortie: (rien)
 Entraîne :
-(l'arc à l'indice iIndice a été supprimer) et (le tableau a été réallouer) ou
-(Exception indice_incorrecte levée)
+(l'arc de destination iDestination a été supprimer) et (le tableau a été réallouer) ou
+(Exception liste_vide levée) ou
+(Exception echec_malloc levée)ou
+(Exception liste_vide levée)
 *********************************************************/
 void CSommet::SOMSupprimerArcSortant(int iDestination)
 {
@@ -530,6 +542,7 @@ void CSommet::SOMSupprimerArcSortant(int iDestination)
 	}
 	else
 	{
+		//On met à jour le nombre d'arc
 		uiSOMNbArcSortant--;
 	}
 }
@@ -541,18 +554,19 @@ Entrée: (rien)
 Nécessite: (rien)
 Sortie: (rien)
 Entraîne :
-(les arcs arrivant et sortant sont inversé) ou
-(Exception indice_incorrecte levée)
+(les arcs arrivant et sortant sont inversé)
 *********************************************************/
 CSommet& CSommet::SOMInverserArrivantPartant()
 {
 	CSommet* pSOMSommet = new CSommet(uiSOMNumero);
 
+	//Inversion des arc : les sortants deviennent arrivant
 	for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < uiSOMNbArcArrivant; uiBoucleArcArrivant++)
 	{
 		pSOMSommet->SOMAjouterArcArrivant(SOMLireArcSortant(uiBoucleArcArrivant));
 	}
 
+	//Inversion des arc : les arrivant deviennent sortants
 	for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < uiSOMNbArcSortant; uiBoucleArcSortant++)
 	{
 		pSOMSommet->SOMAjouterArcSortant(SOMLireArcArrivant(uiBoucleArcSortant));
@@ -562,8 +576,14 @@ CSommet& CSommet::SOMInverserArrivantPartant()
 }
 
 /*********************************************************
-	Recherche l'indice de l'arc arrivant de destination iDestination
-	*********************************************************/
+Recherche l'indice de l'arc arrivant de destination iDestination
+**********************************************************
+Entrée: int iDestination : la destination de l'arc 
+à rechercher dans le sommet
+Nécessite:	(iDestination > 0)
+Sortie: int : l'indice de l'arc trouvé ou -1 si l'arc n'est pas dans le sommet.
+Entraîne :	(rien)
+*********************************************************/
 int CSommet::SOMRechercheIndiceArcArrivant(int iDestination)
 {
 	for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < uiSOMNbArcArrivant; uiBoucleArcArrivant++)
@@ -578,6 +598,12 @@ int CSommet::SOMRechercheIndiceArcArrivant(int iDestination)
 
 /*********************************************************
 Recherche l'indice de l'arc sortant de destination iDestination
+*********************************************************
+Entrée: int iDestination : la destination de l'arc 
+à rechercher dans le sommet
+Nécessite:	(iDestination > 0)
+Sortie: int : l'indice de l'arc trouvé ou -1 si l'arc n'est pas dans le sommet.
+Entraîne :	(rien)
 *********************************************************/
 int CSommet::SOMRechercheIndiceArcSortant(int iDestination)
 {
@@ -593,6 +619,11 @@ int CSommet::SOMRechercheIndiceArcSortant(int iDestination)
 
 /*********************************************************
 Surcharge de l'opérateur d'affectation pour la classe CSommet
+*********************************************************
+Entrée: CSommet& SOMSommet : le sommet à affecter
+Nécessite:	(rien)
+Sortie: CSommet& : le sommet affecté
+Entraîne :	(le sommet en paramètre à été affecter au sommet courant)
 *********************************************************/
 CSommet& CSommet::operator=(CSommet& SOMSommet)
 {

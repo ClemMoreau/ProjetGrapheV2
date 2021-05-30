@@ -88,7 +88,7 @@ Modifie le sommet de destination
 Entrée: iDestination : la nouvelle destination de l'arc
 Nécessite:	(rien)
 Sortie: (rien)
-Entraîne :	uiARDestination = iDestination
+Entraîne :	(uiARDestination = iDestination)
 *********************************************************/
 void CArc::ARCModifierDestination(int iDestination)
 {

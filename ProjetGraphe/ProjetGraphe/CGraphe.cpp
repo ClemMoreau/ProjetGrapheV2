@@ -121,9 +121,6 @@ CSommet& CGraphe::GRALireSommet(int iIndice)
 	return *ppSOMGRAListeSommet[iIndice];
 }
 
-/******************************************************************************************************************************************************************/
-//ATTENTION FAIRE GAFFE : MAYBE COMME SOMRAJOUTERARC FAUDRA METTRE DES POINTEURS SINON CA PEUT BUGUER?
-
 /*********************************************************
 Ajoute un sommet au graphe
 *********************************************************
@@ -131,7 +128,8 @@ Entrée: CSommet& SOMSommet : le sommet à rajouter dans le graphe
 Nécessite:	(rien)
 Sortie: (rien)
 Entraîne :	(SOMSommet a été rajouter à la fin de la liste des sommets) ou
-(Exception echec_malloc levée)
+(Exception echec_malloc levée) ou 
+(Exception sommet_existant levée)
 *********************************************************/
 void CGraphe::GRAAjouterSommet(CSommet& SOMSommet)
 {
@@ -163,15 +161,15 @@ void CGraphe::GRAAjouterSommet(CSommet& SOMSommet)
 }
 
 /*********************************************************
-Modifie le sommet d'indice iIndice
-dans la liste des sommets du graphe
+ Modifie le sommet numero iNumeroSommet
+ dans la liste des sommets du graphe
 *********************************************************
-Entrée: int iIndice : indice du sommet à modifier
+Entrée: int iNumeroSommet : le numéro du sommet à modifier
 		CSommet& SOMSommet : le nouveau sommet du graphe
 Nécessite:	(rien)
 Sortie: (rien)
-Entraîne :	(pSOMGRAListeSommet[iIndice - 1] = SOMSommet) ou
-(Exception indice_incorrecte levée)
+Entraîne :	(pSOMGRAListeSommet[iIndice] = SOMSommet) ou
+(Exception sommet_introuvable levée)
 *********************************************************/
 void CGraphe::GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet)
 {
@@ -183,19 +181,23 @@ void CGraphe::GRAModifierSommet(int iNumeroSommet, CSommet& SOMSommet)
 		EXCLevee.EXCmodifier_message("Le sommet n'est pas dans la liste !");
 		throw(EXCLevee);
 	}
-	//ajouter/modifier
+
+	//Suppression de l'ancien sommet
+	delete(ppSOMGRAListeSommet[iIndiceSommet]);
+	
+	//Ajout du nouveau sommet
 	ppSOMGRAListeSommet[iIndiceSommet] = new CSommet(SOMSommet);
 }
 
 /*********************************************************
-Supprime le sommet d'indice iIndice
+Supprime le sommet numero iNumeroSommet
 dans la liste des sommets du graphe
 *********************************************************
-Entrée: int iIndice : indice du sommet à supprimer
+Entrée: int iNumeroSommet : le numéro du sommet à supprimer
 Nécessite:	(rien)
 Sortie: (rien)
-Entraîne :	(Le sommet d'indice iIndice a été supprimer) ou
-(Exception indice_incorrecte levée) ou
+Entraîne :	(Le sommet numéro iNumeroSommet a été supprimer) ou
+(Exception sommet_introuvable levée) ou
 (Exception liste_vide levée)  ou
 (Exception echec_malloc levée)
 *********************************************************/
@@ -210,6 +212,7 @@ void CGraphe::GRASupprimerSommet(int iNumeroSommet)
 		throw(EXCLevee);
 	}
 
+	//Recherche de l'indice du sommet à supprimer
 	int iIndiceSommet = GRARechercheIndiceSommet(iNumeroSommet);
 	if (iIndiceSommet == -1)
 	{
@@ -248,11 +251,8 @@ void CGraphe::GRASupprimerSommet(int iNumeroSommet)
 			EXCLevee.EXCmodifier_message("Echec realloc !");
 			throw(EXCLevee);
 		}
-
 	}
 }
-
-//revoir les cas particuliers
 
 /*********************************************************
 Ajoute un arc au graphe
@@ -263,7 +263,8 @@ Entrée: int iNumeroSommetDepart : le numero du sommet de depart
 Nécessite:	(rien)
 Sortie: (rien)
 Entraîne :	(deux arcs entre iNumeroSommetDepart et iNumeroSommetDestination ont été rajouter) ou
-(Exception sommet_introuvable levée)
+(Exception sommet_introuvable levée) ou 
+(Exception arc_existant levée)
 *********************************************************/
 void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestination)
 {
@@ -272,8 +273,7 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 	// Recherche du sommet de destination
 	int uiIndiceSommetDestination = GRARechercheIndiceSommet(iNumeroSommetDestination);
 
-	// Si le sommet de départ n'est pas dans la liste on lève une exception 
-	/// on rajoute un sommet?
+	// Si le sommet de départ n'est pas dans la liste on lève une exception
 	if (uiIndiceSommetDepart == -1)
 	{
 		CException EXCLevee;
@@ -282,8 +282,7 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 		throw EXCLevee;
 	}
 
-	// Si le sommet de destination n'est pas dans la liste on lève une exception 
-	/// on rajoute un sommet?
+	// Si le sommet de destination n'est pas dans la liste on lève une exception
 	if (uiIndiceSommetDestination == -1)
 	{
 		CException EXCLevee;
@@ -305,8 +304,8 @@ void CGraphe::GRAAjouterArc(int iNumeroSommetDepart, int iNumeroSommetDestinatio
 	else
 	{
 		CException EXCLevee;
-		EXCLevee.EXCmodifier_valeur(sommet_existant);
-		EXCLevee.EXCmodifier_message("Le sommet est déjà présent dans la liste !");
+		EXCLevee.EXCmodifier_valeur(arc_existant);
+		EXCLevee.EXCmodifier_message("L'arc est déjà présent dans la liste !");
 		throw(EXCLevee);
 	}
 }
@@ -320,7 +319,10 @@ Entrée: int iAncienSommetDepart : le numero de l'ancien sommet de depart
 		int iNouveauSommetDestination : le numero du nouveau sommet de destination
 Nécessite:	(rien)
 Sortie: (rien)
-Entraîne :	()
+Entraîne :	(L'arc entre iAncienSommetDepart et iAncienSommetDestination à été modifier) ou 
+(Exception sommet_introuvable levée) ou
+(Exception arc_existant levée) ou
+(Exception arc_introuvable levée) 
 *********************************************************/
 void CGraphe::GRAModifierArc(int iAncienSommetDepart, int iAncienSommetDestination, int iNouveauSommetDepart, int iNouveauSommetDestination)
 {	
@@ -342,7 +344,9 @@ Entrée: int iNumeroSommetDepart : le numero du sommet de depart
 		int iNumeroSommetDestination : le numero du sommet de destination
 Nécessite:	(rien)
 Sortie: (rien)
-Entraîne :	()
+Entraîne :	(L'arc entre iNumeroSommetDepart et iNumeroSommetDestination à été supprimer) ou
+(Exception sommet_introuvable levée) ou
+(Exception arc_introuvable levée)
 *********************************************************/
 void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestination)
 {
@@ -352,7 +356,6 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	int uiIndiceSommetDestination = GRARechercheIndiceSommet(iNumeroSommetDestination);
 
 	// Si le sommet de départ n'est pas dans la liste on lève une exception 
-	/// on rajoute un sommet?
 	if (uiIndiceSommetDepart == -1)
 	{
 		CException EXCLevee;
@@ -362,7 +365,6 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	}
 
 	// Si le sommet de destination n'est pas dans la liste on lève une exception 
-	/// on rajoute un sommet?
 	if (uiIndiceSommetDestination == -1)
 	{
 		CException EXCLevee;
@@ -394,12 +396,21 @@ void CGraphe::GRASupprimerArc(int iNumeroSommetDepart, int iNumeroSommetDestinat
 	ppSOMGRAListeSommet[uiIndiceSommetDestination]->SOMSupprimerArcArrivant(iNumeroSommetDepart);
 }
 
+/*********************************************************
+Inverse l'orientation de tous les arcs de chaque sommets du graphe
+*********************************************************
+Entrée: (rien)
+Nécessite:	(rien)
+Sortie: CGraphe& : la copie inversé du graphe courant.
+Entraîne :	(Le graphe en sortie est inversé par rapport au graphe courant)
+*********************************************************/
 CGraphe& CGraphe::GRAInverseGraphe()
 {
 	CGraphe* pGRAGraphe = new CGraphe();
 
 	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet; uiBoucleSommet++)
 	{
+		// Inversion des arcs du graphe pour chaque sommet
 		pGRAGraphe->GRAAjouterSommet(ppSOMGRAListeSommet[uiBoucleSommet]->SOMInverserArrivantPartant());
 	}
 
@@ -408,6 +419,11 @@ CGraphe& CGraphe::GRAInverseGraphe()
 
 /*********************************************************
 Recherche si le sommet est présent dans le graphe
+**********************************************************
+Entrée: int iNumeroSommet : le sommet à rechercher dans le graphe
+Nécessite:	(rien)
+Sortie: int : l'indice du sommet trouvé ou -1 si le sommet n'est pas dans le graphe.
+Entraîne :	(rien)
 *********************************************************/
 int CGraphe::GRARechercheIndiceSommet(int iNumeroSommet)
 {
@@ -427,21 +443,24 @@ Affiche le graphe dans le console
 Entrée: (rien)
 Nécessite:	(rien)
 Sortie: (rien)
-Entraîne :	()
+Entraîne :	(Le graphe est affiché en mode texte dans la console)
 *********************************************************/
 void CGraphe::GRAAfficherGraphe()
 {
+	//Pour chaque sommmet
 	for (unsigned int uiBoucleSommet = 0; uiBoucleSommet < uiGRANbSommet; uiBoucleSommet++)
 	{
 		std::cout << "*************************" << std::endl;
 		std::cout << "    Sommet numero : " << ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireNumeroSommet() << std::endl;
 		std::cout << "Liste arcs arrivant : " << std::endl;
+		//Affichage des arc arrivants
 		for (unsigned int uiBoucleArcArrivant = 0; uiBoucleArcArrivant < ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireNombreArcArrivant(); uiBoucleArcArrivant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcArrivant << std::endl;
 			std::cout << "	Destination : " << ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireArcArrivant(uiBoucleArcArrivant)->ARCLireDestination() << std::endl;
 		}
 		std::cout << std::endl << "Liste arcs sortant : " << std::endl;
+		//Affichage des arcs sortants
 		for (unsigned int uiBoucleArcSortant = 0; uiBoucleArcSortant < ppSOMGRAListeSommet[uiBoucleSommet]->SOMLireNombreArcSortant(); uiBoucleArcSortant++)
 		{
 			std::cout << "Arc numero : " << uiBoucleArcSortant << std::endl;
@@ -453,13 +472,18 @@ void CGraphe::GRAAfficherGraphe()
 
 /*********************************************************
 Surcharge de l'opérateur d'affectation pour la classe CGraphe
+*********************************************************
+Entrée: CGraphe& GRAGraphe : le graphe à affecter
+Nécessite:	(rien)
+Sortie: CGraphe& : le graphe affecté
+Entraîne :	(le graphe en paramètre à été affecter au graphe courant)
 *********************************************************/
 CGraphe& CGraphe::operator=(CGraphe& GRAGraphe)
 {
 	// Recopie du nombre de sommet
 	uiGRANbSommet = GRAGraphe.uiGRANbSommet;
 
-	// Allocation en mémoire de la lsite de sommet
+	// Allocation en mémoire de la liste de sommet
 	ppSOMGRAListeSommet = (CSommet**)malloc(uiGRANbSommet * sizeof(CSommet*));
 
 	for (unsigned int uiBoucle = 0; uiBoucle < uiGRANbSommet; uiBoucle++)
