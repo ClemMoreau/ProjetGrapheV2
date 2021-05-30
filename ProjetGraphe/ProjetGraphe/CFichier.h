@@ -23,7 +23,7 @@ private:
 				 *************/
 
 	/*Nom du Fichier*/
-	char* psFICNomFichier;
+	char* pcFICNomFichier;
 
 public:
 

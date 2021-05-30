@@ -38,7 +38,7 @@ Entraîne :	L'objet est prêt à être détruit
 *********************************************************/
 CFichier::~CFichier()
 {
-	free(psFICNomFichier);
+	free(pcFICNomFichier);
 }
 
 /*********************************************************
@@ -51,14 +51,14 @@ Entraîne :	(rien)
 *********************************************************/
 char* CFichier::FICLireNomFichier()
 {
-	if (psFICNomFichier == NULL)
+	if (pcFICNomFichier == NULL)
 	{
 		CException EXCObjet;
 		EXCObjet.EXCmodifier_valeur(nom_null);
 		throw(EXCObjet);
 
 	}
-	return psFICNomFichier;
+	return pcFICNomFichier;
 }
 
 /*********************************************************
@@ -74,23 +74,23 @@ void CFichier::FICModifierNomFichier(const char* sNomFichier)
 {
 	if (sNomFichier)
 	{
-		if (psFICNomFichier)
+		if (pcFICNomFichier)
 		{
-			free(psFICNomFichier);
+			free(pcFICNomFichier);
 		}
 
 		int iConteur = strlen(sNomFichier);
-		psFICNomFichier = (char*)malloc(iConteur + 1);
+		pcFICNomFichier = (char*)malloc(iConteur + 1);
 		int iBoucleCopie;
 		for (iBoucleCopie = 0; iBoucleCopie < iConteur; iBoucleCopie++)
 		{
-			psFICNomFichier[iBoucleCopie] = sNomFichier[iBoucleCopie];
+			pcFICNomFichier[iBoucleCopie] = sNomFichier[iBoucleCopie];
 		}
-		psFICNomFichier[iBoucleCopie] = '\0';
+		pcFICNomFichier[iBoucleCopie] = '\0';
 	}
 	else
 	{
-		psFICNomFichier = NULL;
+		pcFICNomFichier = NULL;
 	}
 }
 
